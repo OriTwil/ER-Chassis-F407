@@ -1,10 +1,10 @@
 /*
  * @Author: wtr电控组
  * @Date: 2022-10-13 23:33:37
- * @LastEditTime: 2023-02-22 19:58:40
+ * @LastEditTime: 2023-03-29 23:23:00
  * @LastEditors: szf
  * @Description: 封装WTR曾经用过的解码函数，作为技术积累
- * @FilePath: \ER\Usercode\user_src\wtr_uart.c
+ * @FilePath: \ER-Chassis-F407\Usercode\user_src\wtr_uart.c
  * @WeChat:szf13373959031
  */
 #include "wtr_uart.h"
@@ -81,69 +81,68 @@ void AS69_Decode(){
 //OPS全方位平面定位系统
 void OPS_Decode()
 {
-    HAL_UART_Receive_IT(&huart6, (uint8_t *)&ch, 1);
+    HAL_UART_Receive_IT(&huart3, (uint8_t *)&ch, 1);
     // USART_ClearITPendingBit( USART1, USART_FLAG_RXNE);
     // HAL_UART_IRQHandler(&huart6); // 该函数会清空中断标志，取消中断使能，并间接调用回调函数
     switch (count) // uint8_t隐转为int
-    {
-        case 0:
+        {
+            case 0:
 
-            if (ch[0] == 0x0d)
-                count++;
-            else
+                if (ch[0] == 0x0d)
+                    count++;
+                else
+                    count = 0;
+                break;
+
+            case 1:
+
+                if (ch[0] == 0x0a) {
+                    i = 0;
+                    count++;
+                } else if (ch[0] == 0x0d)
+                    ;
+                else
+                    count = 0;
+                break;
+
+            case 2:
+
+                posture.data[i] = ch[0];
+                i++;
+                if (i >= 24) {
+                    i = 0;
+                    count++;
+                }
+                break;
+
+            case 3:
+
+                if (ch[0] == 0x0a)
+                    count++;
+                else
+                    count = 0;
+                break;
+
+            case 4:
+
+                if (ch[0] == 0x0d) {
+                    mav_posture.zangle = posture.ActVal[0] * 0.001;
+                    mav_posture.xangle = posture.ActVal[1] * 0.001;
+                    // mav_posture.xangle = control.x_set;
+                    mav_posture.yangle = posture.ActVal[2] * 0.001;
+                    mav_posture.pos_x = posture.ActVal[3] * 0.001;
+                    mav_posture.pos_y = posture.ActVal[4] * 0.001;
+                    mav_posture.w_z = posture.ActVal[5] * 0.001;
+                    // mav_posture.w_z = control.vx_set;
+                }
                 count = 0;
-            break;
+                break;
 
-        case 1:
+            default:
 
-            if (ch[0] == 0x0a) {
-                i = 0;
-                count++;
-            } else if (ch[0] == 0x0d)
-                ;
-            else
                 count = 0;
-            break;
-
-        case 2:
-
-            posture.data[i] = ch[0];
-            i++;
-            if (i >= 24) {
-                i = 0;
-                count++;
-            }
-            break;
-
-        case 3:
-
-            if (ch[0] == 0x0a)
-                count++;
-            else
-                count = 0;
-            break;
-
-        case 4:
-
-            if (ch[0] == 0x0d) {
-                mav_posture.zangle = posture.ActVal[0] * 0.001;
-                mav_posture.xangle = posture.ActVal[1] * 0.001;
-                // mav_posture.xangle = control.x_set;
-                mav_posture.yangle = posture.ActVal[2] * 0.001;
-                mav_posture.pos_x  = posture.ActVal[3] * 0.001;
-                mav_posture.pos_y  = posture.ActVal[4] * 0.001;
-                mav_posture.w_z    = posture.ActVal[5] * 0.001;
-                // mav_posture.w_z = control.vx_set;
-                mavlink_msg_posture_send_struct(MAVLINK_COMM_0, &mav_posture); // 可能要调整延时
-            }
-            count = 0;
-            break;
-
-        default:
-
-            count = 0;
-            break;
-    }
+                break;
+        }
 }
 
 

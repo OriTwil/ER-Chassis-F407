@@ -71,10 +71,10 @@ void StartDefaultTask(void const *argument)
     DJI_Init();// 大疆电机初始化
     wtrMavlink_BindChannel(&huart1, MAVLINK_COMM_0);// MAVLINK初始化
     CtrlDataSender_Init(&huart2, MAVLINK_COMM_1); // 遥控器初始化
-
+    HAL_UART_Receive_DMA(&huart3, JoyStickReceiveData, 18); // DMA接收AS69
     //开启线程
     // OwChassisTaskStart(&ControllerData);// 全向轮底盘控制线程
-    // PerceptionTaskStart(&ControllerData);  // 底盘感知定位线程
+    PerceptionTaskStart(&ControllerData);  // 底盘感知定位线程
     ChassisTaskStart(&ControllerData); //舵轮底盘控制线程
 	// CtrlDataSender_Start(&ControllerData);// 遥控器线程
 

@@ -213,6 +213,7 @@ void ChassisTestTask(void const *argument)
     osDelay(200);
     uint32_t PreviousWakeTime = osKernelSysTick();
     RunningState = HallCorrecting;
+    double lx, ly, rx;
 
     for (int i = 0; i < 3; i++) {
         HallCorrectingStartPos[i] = wheels[i].now_rot_pos;
@@ -222,7 +223,9 @@ void ChassisTestTask(void const *argument)
         // Chassis_SetSpeed(wheels, 3, 1, 1, 0);
         switch (RunningState) {
             case Normal:
-                Chassis_SetSpeed(wheels, 3, 0, 0, 1);
+                DeadBand(crl_speed.vx,crl_speed.vy,&lx,&ly,0.1414);
+                Chassis_SetSpeed(wheels, 3, lx * 5, -ly * 5, -crl_speed.vw * 5);
+                // Chassis_SetSpeed(wheels,3,0,0,1);
                 break;
             case HallCorrecting:
                 Chassis_HallCorrecting(wheels, 3, HallCorrectingStartTick);

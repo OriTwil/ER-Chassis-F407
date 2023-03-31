@@ -15,6 +15,7 @@
 int counter          = 0;
 int test             = 0;
 float w_speed        = 0;
+int16_t crldata[4] = {0};
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
@@ -26,12 +27,15 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
         wtrMavlink_UARTRxCpltCallback(huart, MAVLINK_COMM_0); // 进入mavlink回调
     }
     // 定位模块消息
-    else if (huart->Instance == UART4) // 底盘定位系统的decode,可以换为DMA轮询,封装到祖传的串口库里s
+    if (huart->Instance == UART4) // 底盘定位系统的decode,可以换为DMA轮询,封装到祖传的串口库里s
     {
         OPS_Decode();
-    } 
+    }
     else {
         AS69_Decode(); // AS69解码
+        // crl_speed.vy = (float ) (crldata[0] - CH0_BIAS)/CH_RANGE * 1;
+        // crl_speed.vx = (float ) (crldata[1] - CH1_BIAS)/CH_RANGE * 1;
+        // crl_speed.vw = (float ) (crldata[2] - CH2_BIAS)/CH_RANGE * 1;
     }
 }
 
