@@ -1,23 +1,27 @@
 # ER-Chassis-F407
-2023年ROBOCON ER机器人底盘 移植到STM32F407主板
 
-### 版本说明
-- 2023.4.11 完成框架，还需要设计遥控器操作方式，完善代码可靠性，规范性
+ER robot chassis for ROBOCON 2023, ported to STM32F407 MCU.
 
-### 安装与使用
-- git clone工程。
-- 如果使用VS Code开发，可以直接双击workspace
-- 如果使用Keil开发，可以对应修改CubeMX设置。重新生成工程，复制Usercode文件夹，修改main.c（时钟回调弱定义）
+## Version History
+- 2023.4.11: Initial release. Requires further development to finalize remote control operation, improve code reliability and compliance.
 
-### 文件说明
-- Usercode文件夹，方便移植
-### 机器人硬件说明
-- 主控板由硬件组（邢）自制
-- 定位采用东大定位系统，接RS232转ttl模块，再接到主控板串口
-- 舵轮用的VESC电调，转向DJI2006，并联CAN接到CAN网
-- 舵轮位置校准通过三个霍尔元件，接主控板GPIO
-- 红外测距辅助定位，接到硬件组自制高精度数模转换模块，再接主控板SPI
-- 小屏幕辅助调试，直接插到主控板排母，通过SPI通信
-- 板间通信、与上位机通信：串口 + MAVLINK
-- 遥控器：AS69
-- 无线调试器：可以作为无线串口和无线烧录、调试
+## Installation and Usage
+- Clone the repository.
+- For VS Code users, open the workspace file directly.
+- For Keil users, modify CubeMX settings, regenerate the project, copy the Usercode folder and modify main.c (define the clock callback as weak).
+
+## File Description
+- Usercode folder, to facilitate porting.
+
+## Robot Hardware Specifications
+- The main control board is self-made by the hardware team (Xing).
+- Positioning uses a positioning system that is connected to the main control board via an RS232 to TTL module and a serial port.
+- The steering wheel uses a VESC electronic speed controller (ESC), with a DJI2006 for steering, and is connected to the CAN bus in parallel.
+- The position of the steering wheel is calibrated using three Hall effect sensors, which are connected to the main control board's GPIO.
+- Infrared ranging is used for auxiliary positioning, which is connected to the main control board's SPI via a custom-made high-precision analog-to-digital converter module designed by the hardware team.
+- A small screen is used for debugging and is plugged into the main control board's pin header via SPI communication.
+- Inter-board communication and communication with the host computer: serial port + MAVLINK.
+- Remote control: AS69.
+- Wireless debugger: can be used as a wireless serial port and for wireless burning, debugging.
+
+
