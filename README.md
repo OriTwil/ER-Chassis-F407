@@ -20,9 +20,9 @@ ER robot chassis for ROBOCON 2023, ported to STM32F407 MCU.
 - The encoder uses an `AMT102-V` incremental capacitive modular encoder.
 - The position of the steering wheel is calibrated using three Hall effect sensors`NJK-5001A`, which are connected to the main control board's GPIO.
 - Infrared ranging `DT35` is used for auxiliary positioning, which is connected to the main control board's SPI via a custom-made high-precision analog-to-digital converter module designed by the hardware team.
-- A small screen is used for debugging and is plugged into the main control board's pin header via SPI communication.
+- A `OLED` is used for debugging and is plugged into the main control board's pin header via SPI communication.
 - Inter-board communication and communication with the host computer: serial port + MAVLINK.
-- Remote control: AS69.
-- Wireless debugger: can be used as a wireless serial port and for wireless burning, debugging.
+- Remote control: `AS69`.
+- `Wireless debugger`: can be used as a wireless serial port and for wireless burning, debugging.
 
 
