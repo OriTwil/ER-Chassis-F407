@@ -1,12 +1,3 @@
-/*
- * @Author: szf
- * @Date: 2023-02-23 20:07:26
- * @LastEditTime: 2023-02-23 20:07:39
- * @LastEditors: szf
- * @Description: 
- * @FilePath: \ER\Usercode\user_src\ctrl_data_sender.c
- * @WeChat:szf13373959031
- */
 /**
  * @file controller_data_sender.c
  * @author TITH (1023515576@qq.com)

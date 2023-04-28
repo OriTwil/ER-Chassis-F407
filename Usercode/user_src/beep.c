@@ -1,12 +1,3 @@
-/*
- * @Author: szf
- * @Date: 2023-02-23 20:28:54
- * @LastEditTime: 2023-02-24 15:14:39
- * @LastEditors: szf
- * @Description: 
- * @FilePath: \ER\Usercode\user_src\beep.c
- * @WeChat:szf13373959031
- */
 /**
  * @file beep.c
  * @author TITH (1023515576@qq.com)
