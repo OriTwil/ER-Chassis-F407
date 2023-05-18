@@ -2,6 +2,7 @@
 #define WTR_UART_H
 
 #include "main.h"
+#include "user_main.h"
 
 #define CH0_BIAS   1024
 #define CH1_BIAS   1024

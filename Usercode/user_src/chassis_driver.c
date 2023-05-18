@@ -11,12 +11,6 @@
 
 #include "chassis_driver.h"
 #include <math.h>
-#include <stdio.h>
-#include <stdbool.h>
-#include "useful_constant.h"
-#include "Caculate.h"
-#include "uart_device.h"
-#include "string.h"
 
 bool Reseting;
 

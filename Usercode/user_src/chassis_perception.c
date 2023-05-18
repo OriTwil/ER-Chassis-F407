@@ -8,23 +8,6 @@
  * @WeChat:szf13373959031
  */
 #include "chassis_perception.h"
-#include "cmsis_os.h"
-#include "can.h"
-#include "dma.h"
-#include "usart.h"
-#include "gpio.h"
-#include "Caculate.h"
-#include "wtr_can.h"
-#include "DJI.h"
-#include "wtr_uart.h"
-#include <math.h>
-#include "main.h"
-#include "usermain.h"
-#include "wtr_mavlink.h"
-#include "ADS1256.h"
-#include <math.h>
-#include "usercallback.h"
-#include "usercalculate.h"
 
 /**
  * @description: 线程二：定位系统
@@ -47,8 +30,8 @@ void ChassisPerceptionTask(void const *argument)
     }
 }
 
-void PerceptionTaskStart(mavlink_controller_t *ctrl_data)
+void PerceptionTaskStart()
 {
     osThreadDef(perception, ChassisPerceptionTask, osPriorityNormal, 0, 512);
-    osThreadCreate(osThread(perception), ctrl_data);
+    osThreadCreate(osThread(perception), NULL);
 }

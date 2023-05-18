@@ -8,11 +8,6 @@
  * @WeChat:szf13373959031
  */
 #include "wtr_uart.h"
-#include "DJI.h"
-#include "string.h"
-#include "math.h"
-#include "usart.h"
-#include "usermain.h"
 
 Remote_t Raw_Data;
 underpan_speed crl_speed;

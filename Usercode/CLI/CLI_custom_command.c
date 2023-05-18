@@ -10,10 +10,10 @@
  */
 
 #include "CLI_custom_command.h"
-#include "ADS1256.h"
+#include "wtr_ads1256.h"
 #include "uart_device.h"
 #include "stdbool.h"
-#include "useful_constant.h"
+#include "user_config.h"
 
 /**
  * @brief 自定义命令在这里注册
