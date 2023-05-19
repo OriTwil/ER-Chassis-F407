@@ -9,8 +9,15 @@
  *
  */
 
+#include <math.h>
 #include "chassis_driver.h"
 #include <math.h>
+#include <stdio.h>
+#include <stdbool.h>
+#include "user_config.h"
+#include "user_calculate.h"
+#include "uart_device.h"
+#include "string.h"
 
 bool Reseting;
 

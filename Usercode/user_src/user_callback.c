@@ -7,6 +7,11 @@
  */
 
 #include "user_callback.h"
+#include "mavlink_msg_controller.h"
+#include "mavlink_msg_control.h"
+#include "chassis_driver.h"
+#include "state_management.h"
+
 
 int counter          = 0;
 int test             = 0;
@@ -46,7 +51,7 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
  * @param msg 接收到的消息
  * @return
  */
-extern mavlink_controller_t ControllerData;
+extern volatile mavlink_controller_t ControllerData;
 void wtrMavlink_MsgRxCpltCallback(mavlink_message_t *msg)
 {
 

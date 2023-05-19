@@ -7,10 +7,13 @@
  * @FilePath: \ER\Usercode\user_inc\usercalculate.h
  * @@WeChat:szf13373959031
  */
-#ifndef _USERCALCULATE_H__
-#define _USERCALCULATE_H__
+#pragma once
 
 #include "user_main.h"
+#include "wtr_mavlink.h"
+#include "mavlink_msg_control.h"
+#include "user_calculate.h"
+#include "wtr_dji.h"
 
 #define r_underpan_3 0.1934
 #define r_underpan_4 0.25
@@ -77,5 +80,3 @@ void speedServo(float ref, DJI_t *motor);
 void DeadBand(double x, double y, double *new_x, double *new_y, double threshould);
 
 mavlink_control_t FrameTransform(mavlink_control_t *control, mavlink_posture_t *posture);
-
-#endif

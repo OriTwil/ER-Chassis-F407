@@ -8,6 +8,7 @@
  * @WeChat:szf13373959031
  */
 #include "chassis_perception.h"
+#include "wtr_uart.h"
 
 /**
  * @description: 线程二：定位系统

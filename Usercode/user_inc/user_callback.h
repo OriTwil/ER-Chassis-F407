@@ -7,10 +7,9 @@
  * @FilePath: \ER\Usercode\user_inc\usercallback.h
  * @@WeChat:szf13373959031
  */
-#ifndef _USERCALLBACK_H__
-#define _USERCALLBACK_H__
-
+#pragma once
 #include "user_main.h"
+#include "wtr_mavlink.h"
 
 extern int counter;
 extern int test;
@@ -24,5 +23,3 @@ void wtrMavlink_MsgRxCpltCallback(mavlink_message_t *msg);
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin);
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim);
-
-#endif

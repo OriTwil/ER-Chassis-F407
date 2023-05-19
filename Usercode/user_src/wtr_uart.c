@@ -8,10 +8,12 @@
  * @WeChat:szf13373959031
  */
 #include "wtr_uart.h"
+#include "state_management.h"
 
 Remote_t Raw_Data;
 underpan_speed crl_speed;
 uint8_t JoyStickReceiveData[18];
+uint8_t i = 0;
 
 double angMax = 360;
 double posRef ;//工程中也可调用需要参数来传值

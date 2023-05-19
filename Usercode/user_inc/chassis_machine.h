@@ -9,9 +9,11 @@
  * 
  */
 
-#pragma once
+#ifndef __CHASSIS_MACHINE__
+#define __CHASSIS_MACHINE__
 
-#include "wtr_mavlink.h"
 #include "user_main.h"
 
 void ChassisTaskStart();
+
+#endif

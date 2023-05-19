@@ -10,6 +10,7 @@
 
 #include "user_calculate.h"
 #include <math.h>
+#include "user_config.h"
 
 double moter_speed[4];
 // 底盘
@@ -72,9 +73,9 @@ void CalculateFourWheels(double *moter_speed,
  * @return {void}
  */
 void CalculateFourWheels_(double *moter_speed,
-                   double v_x,
-                   double v_y,
-                   double v_w)
+                   double vx,
+                   double vy,
+                   double vw)
 {
     moter_speed[0] = (vx * sqrt(2) + vy * sqrt(2) + vw * r_underpan_4) / (2 * M_PI * r_wheel);
     moter_speed[1] = (-vx * sqrt(2) + vy * sqrt(2) + vw * r_underpan_4) / (2 * M_PI * r_wheel);

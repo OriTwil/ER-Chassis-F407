@@ -9,9 +9,13 @@
  *
  */
 
-#pragma once
+#ifndef __CHASSIS_DRIVER_H__
+#define __CHASSIS_DRIVER_H__
+
 #include "user_main.h"
 #include "wtr_vesc.h"
+#include "wtr_dji.h"
+#
 
 typedef struct
 {
@@ -33,8 +37,6 @@ typedef struct
     VESC_t hvesc;
 } uni_wheel_t;
 
-extern bool Reseting;
-
 void Chassis_Init(uni_wheel_t *wheel); //!
 
 void Wheel_Set(uni_wheel_t *wheel, double speed, double rot_pos); 
@@ -49,3 +51,4 @@ void Chassis_SetSpeed(uni_wheel_t *wheel, int num, double vx, double vy, double 
 
 void Wheel_Hall_Callback(GPIO_TypeDef *GPIOx, uint16_t GPIO_Pin, uni_wheel_t *wheel);
 
+#endif

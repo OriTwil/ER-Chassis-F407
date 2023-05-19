@@ -4,7 +4,7 @@
 #define MAVLINK_MSG_ID_Controller 1
 
 
-typedef struct __mavlink_controller_t {
+typedef volatile struct __mavlink_controller_t {
  int16_t left_x; /*<  左摇杆x,0为原点,向右为正*/
  int16_t left_y; /*<  左摇杆y,0为原点,向上为正*/
  int16_t right_x; /*<  右摇杆x,0为原点,向右为正*/

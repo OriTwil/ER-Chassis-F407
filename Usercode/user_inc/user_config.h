@@ -47,4 +47,18 @@
 #define M_LOG2_E        _M_LN2
 #define M_INVLN2        1.4426950408889633870E0  /* 1 / log(2) */
 
+#define SpeedRatioNum 2
+
+// 舵轮
+#define Wheel_Front 0
+#define Wheel_Left 1
+#define Wheel_Right 2
+
+#define Wheel_Front_Locked_Pos 0
+#define Wheel_Left_Locked_Pos 0
+#define Wheel_Right_Locked_Pos 0
+
+#define HallCorrecting_Max_Velocity 30.0
+#define HallCorrecting_Acceleration 300.0
+
 

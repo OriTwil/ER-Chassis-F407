@@ -8,14 +8,13 @@
  * @copyright Copyright (c) 2022
  * 
  */
-#pragma once
+#ifndef  __CHASSIS_COMMUNICATE_H__
 
-#include "wtr_mavlink.h"
-#include "main.h"
-#include "cmsis_os.h"
+#include "mavlink.h"
 #include "usart.h"
-#include "user_main.h"
 
 void CtrlDataSender_Init(UART_HandleTypeDef *huart, mavlink_channel_t chan);
 
 void CtrlDataSender_Start();
+
+#endif
