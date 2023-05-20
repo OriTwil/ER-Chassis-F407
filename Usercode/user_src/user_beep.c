@@ -13,6 +13,7 @@
 #include "semphr.h"
 #include "gpio.h"
 #include "user_main.h"
+#include "user_config.h"
 
 SemaphoreHandle_t BeepSem;
 

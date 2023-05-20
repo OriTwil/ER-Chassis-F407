@@ -9,6 +9,7 @@
  */
 #include "chassis_perception.h"
 #include "wtr_uart.h"
+#include "user_config.h"
 
 /**
  * @description: 线程二：定位系统
@@ -18,8 +19,8 @@
  */
 void ChassisPerceptionTask(void const *argument)
 {
-    // 码盘定位系统通过串口4收发信息
-    HAL_UART_Receive_IT(&huart3, (uint8_t *)&ch, 1);
+    // 码盘定位系统通过串口收发信息
+    HAL_UART_Receive_IT(&huart_OPS, (uint8_t *)&ch, 1);
 
     // ADS1256_UpdateDiffData();
 

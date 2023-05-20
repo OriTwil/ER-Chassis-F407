@@ -13,7 +13,7 @@
 #include "user_config.h"
 
 double moter_speed[4];
-// 底盘
+// RR麦轮底盘
 #define rotate_ratio 0.3615 // (Width + Length)/2
 #define wheel_rpm_ratio 2387.324 // 换算线速度到rpm
 

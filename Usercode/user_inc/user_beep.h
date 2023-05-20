@@ -15,9 +15,6 @@
 #include "cmsis_os.h"
 #include <stdbool.h>
 
-#define BeepPinGPIOx GPIOD
-#define BeepPinGPIO_Pin GPIO_PIN_7
-
 void Beep_Init();
 void Beep();
 void BeepSet(bool is_on);

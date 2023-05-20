@@ -8,6 +8,8 @@
  * @copyright Copyright (c) 2022
  *
  */
+#ifndef __WTR_MAVLINK_H__
+#define __WTR_MAVLINK_H__
 
 #pragma once
 
@@ -174,4 +176,6 @@ static inline void wtrMavlink_UARTRxCpltCallback(UART_HandleTypeDef *huart, mavl
 
 #ifdef __cplusplus
 }
+#endif
+
 #endif

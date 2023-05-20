@@ -20,7 +20,6 @@
 #include "chassis_servo.h"
 #include "chassis_perception.h"
 
-
 /**
  * @description: 初始化与开启线程
  * @author: szf
@@ -42,7 +41,7 @@ void StartDefaultTask(void const *argument)
     hDJI[6].motorType = M2006;
     DJI_Init();                                             // 大疆电机初始化
     wtrMavlink_BindChannel(&huart1, MAVLINK_COMM_0);        // MAVLINK初始化
-    CtrlDataSender_Init(&huart2, MAVLINK_COMM_1);           // 遥控器初始化
+    CommunicateInit(&huart2, MAVLINK_COMM_1);           // 遥控器初始化
     HAL_UART_Receive_DMA(&huart3, JoyStickReceiveData, 18); // DMA接收AS69
     // 开启线程
     //  OwChassisTaskStart(&ControllerData);// 全向轮底盘控制线程

@@ -135,5 +135,6 @@ extern WHEEL_COMPONENT Wheel_component;
 extern mavlink_posture_t mav_posture;
 extern mavlink_control_t control;
 extern mavlink_controller_t ControllerData;
+extern TaskHandle_t g_stateManagementTaskHandle;
 
 #endif

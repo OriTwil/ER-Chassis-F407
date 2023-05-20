@@ -18,15 +18,4 @@
 #include "usart.h"
 #include "gpio.h"
 
-// 宏定义计算中常数及底盘数据
-#define pi           3.1415926535898
-#define DEC          (pi / 180)
-#define r_underpan_3 0.1934
-#define r_underpan_4 0.25
-#define r_wheel      0.076
-// 限幅
-#define max(a, b)      (a > b ? a : b)
-#define min(a, b)      (a < b ? a : b)
-#define range(x, a, b) (min(max(x, a), b))
-
 #endif

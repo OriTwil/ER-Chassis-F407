@@ -57,14 +57,12 @@ void ServoTaskStart()
 void MotorInit()
 {
     CANFilterInit(&hcan1);
-    hDJI[0].motorType = M3508; // 右前
-    hDJI[1].motorType = M3508; // 左前
-    hDJI[2].motorType = M3508; // 左后
-    hDJI[3].motorType = M3508; // 右后
-    hDJI[4].motorType = M3508;
-    hDJI[5].motorType = M3508;
+    hDJI[0].motorType = M2006; // 前
+    hDJI[1].motorType = M2006; // 左
+    hDJI[2].motorType = M2006; // 有
+    hDJI[3].motorType = M2006; // claw
+    hDJI[4].motorType = M2006; // 翻转
+    hDJI[5].motorType = M3508; // 伸缩
     hDJI[6].motorType = M3508;
     DJI_Init(); // 大疆电机初始化
 }
-
-

@@ -7,6 +7,7 @@
  * @FilePath: \ER\Usercode\user_inc\useful_constant.h
  * @@WeChat:szf13373959031
  */
+
 /**
  * @brief 一些有用的常量，基本上是从 GCC 的 math.h 中复制下来的(因为 ARMCC 的库里貌似没有)
  * 
@@ -25,6 +26,7 @@
 #define M_LN2		_M_LN2
 #define M_LN10		2.30258509299404568402
 #define M_PI		3.14159265358979323846
+#define DEC          (M_PI / 180)
 
 #ifndef M_PI_2
 #define M_PI_2		1.57079632679489661923
@@ -49,6 +51,16 @@
 
 #define SpeedRatioNum 2
 
+// 限幅
+#define max(a, b)      (a > b ? a : b)
+#define min(a, b)      (a < b ? a : b)
+#define range(x, a, b) (min(max(x, a), b))
+
+/**
+ * @brief 自定义参数
+ * 
+ */
+
 // 舵轮
 #define Wheel_Front 0
 #define Wheel_Left 1
@@ -61,4 +73,42 @@
 #define HallCorrecting_Max_Velocity 30.0
 #define HallCorrecting_Acceleration 300.0
 
+#define Hall_Front_GPIN_PIN GPIO_PIN_12
+#define Hall_Left_GPIN_PIN GPIO_PIN_15
+#define Hall_Right_GPIN_PIN GPIO_PIN_13
+
+//* 舵轮初始化数据在chassis_driver.c中的Chassis_Init()
+
+// 按键通知值定义
+#define BUTTON1_NOTIFICATION (1 << 0)
+#define BUTTON2_NOTIFICATION (1 << 1)
+#define BUTTON3_NOTIFICATION (1 << 2)
+
+
+/**
+ * @brief 自定义端口 * 
+ */
+
+#define BeepPinGPIOx GPIOD
+#define BeepPinGPIO_Pin GPIO_PIN_7
+
+// wtr_ads1256_config.h
+#define ADS1256_DRDY_GPIOx GPIOA
+#define ADS1256_DRDY_GPIO_Pin GPIO_PIN_4
+
+#define ADS1256_Reset_GPIOx GPIOB
+#define ADS1256_DRDY_GPIOx     GPIOA
+#define ADS1256_DRDY_GPIO_Pin  GPIO_PIN_4
+
+#define ADS1256_Reset_GPIOx    GPIOB
+
+#define ADS1256_Reset_GPIO_Pin GPIO_PIN_2
+
+// wtr_time.h
+#define HAL_Tick_TIM TIM7
+
+#define huart_OPS huart4
+#define UART_Computer USART2
+#define UART_OPS UART4
+#define UART_AS69 USART1
 

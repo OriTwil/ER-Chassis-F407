@@ -1,6 +1,9 @@
 #include "state_management.h"
 #include "mavlink_msg_controller.h"
 #include "user_config.h"
+#include "semphr.h"
+#include "chassis_communicate.h"
+#include "user_config.h"
 
 WHEEL_COMPONENT Wheel_component;
 CHASSIS_COMPONENT Chassis_component;
@@ -9,10 +12,12 @@ CHASSIS_PID Chassis_pid;
 CHASSIS_CONTROL Chassis_control;
 PICKUP_COMPONENT Pickup_component;
 CHASSIS_POSITION Chassis_position;
+
 // 变量定义
 mavlink_posture_t mav_posture;
 mavlink_control_t control;
 mavlink_controller_t ControllerData;
+TaskHandle_t g_stateManagementTaskHandle;
 
 /**
  * @description: 操作线程
@@ -21,10 +26,31 @@ mavlink_controller_t ControllerData;
  */
 void StateManagemantTask(void const *argument)
 {
-    uint32_t PreviousWakeTime = osKernelSysTick();
+    uint32_t notificationValue;
     vTaskDelay(20);
     for (;;) {
-        vTaskDelayUntil(&PreviousWakeTime, 5);
+        xTaskNotifyWait(0, 0, &notificationValue, portMAX_DELAY);
+
+        // 处理按键通知
+        if (notificationValue & BUTTON1_NOTIFICATION) {
+            // 执行按键1的操作
+            //  FireSwitchNumber
+            //  PickupSwitchStep
+            //  PickupSwitchState
+            //  SetServoRefPickupTrajectory(0, 0, 195, &Pickup_ref);
+            //  ...
+        }
+
+        if (notificationValue & BUTTON2_NOTIFICATION) {
+            // 执行按键2的操作
+            // ...
+        }
+
+        if (notificationValue & BUTTON3_NOTIFICATION) {
+            // 执行按键3的操作
+            // ...
+        }
+        vTaskDelay(10);
     }
 }
 
@@ -49,7 +75,7 @@ void StateManagemantTaskStart()
 {
 
     osThreadDef(statemanagement, StateManagemantTask, osPriorityBelowNormal, 0, 512);
-    osThreadCreate(osThread(statemanagement), NULL);
+    g_stateManagementTaskHandle = osThreadCreate(osThread(statemanagement), NULL);
 
     // osThreadDef(statemanagementtest,StateManagemantTestTask,osPriorityBelowNormal,0,512);
     // osThreadCreate(osThread(statemanagementtest),NULL);

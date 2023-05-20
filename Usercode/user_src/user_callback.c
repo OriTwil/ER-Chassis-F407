@@ -13,27 +13,24 @@
 #include "state_management.h"
 #include "user_calculate.h"
 #include "wtr_uart.h"
+#include "user_config.h"
 
-int counter          = 0;
-int test             = 0;
-float w_speed        = 0;
+float w_speed      = 0;
 int16_t crldata[4] = {0};
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
-
-    test++;
     // 上位机消息
-    if (huart->Instance == USART2) {
+    if (huart->Instance == UART_Computer) {
         // UART1Decode();//AS69解码
         wtrMavlink_UARTRxCpltCallback(huart, MAVLINK_COMM_0); // 进入mavlink回调
     }
     // 定位模块消息
-    if (huart->Instance == UART4) // 底盘定位系统的decode,可以换为DMA轮询,封装到祖传的串口库里s
+    if (huart->Instance == UART_OPS) // 底盘定位系统的decode,可以换为DMA轮询,封装到祖传的串口库里s
     {
         OPS_Decode();
     }
-    else {
+    if (huart->Instance == UART_AS69) {
         AS69_Decode(); // AS69解码
         // crl_speed.vy = (float ) (crldata[0] - CH0_BIAS)/CH_RANGE * 1;
         // crl_speed.vx = (float ) (crldata[1] - CH1_BIAS)/CH_RANGE * 1;
@@ -63,14 +60,14 @@ void wtrMavlink_MsgRxCpltCallback(mavlink_message_t *msg)
             break;
         case 1:
             // id = 1 的消息对应的解码函数(mavlink_msg_xxx_decode)
-            mavlink_msg_controller_decode(msg, &ControllerData); // 遥控器 
+            mavlink_msg_controller_decode(msg, &ControllerData); // 遥控器
             break;
         // ......
         default:
             break;
     }
 }
-int test_count = 0;
+
 /**
  * @description:外部中断回调函数
  * @author: szf
@@ -80,24 +77,20 @@ int test_count = 0;
 extern uni_wheel_t wheels[3];
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
-    test_count++;
-    switch (GPIO_Pin)
-	{
-	case GPIO_PIN_12:
-		Wheel_Hall_Callback(GPIOE, GPIO_Pin, &wheels[0]);
-		break;
-	case GPIO_PIN_15:
-		Wheel_Hall_Callback(GPIOE, GPIO_Pin, &wheels[1]);
-		// UWheels_Hall_Callback(1);
-		break;
-	case GPIO_PIN_13:
-		Wheel_Hall_Callback(GPIOE, GPIO_Pin, &wheels[2]);
-        test_count++;
-		// UWheels_Hall_Callback(2);
-		break;
-	default:
-        counter++;
-		// printf("EXTI %d\n", GPIO_Pin);
-		break;
-	}
+    switch (GPIO_Pin) {
+        case Hall_Front_GPIN_PIN:
+            Wheel_Hall_Callback(GPIOE, GPIO_Pin, &wheels[0]);
+            break;
+        case Hall_Left_GPIN_PIN:
+            Wheel_Hall_Callback(GPIOE, GPIO_Pin, &wheels[1]);
+            // UWheels_Hall_Callback(1);
+            break;
+        case Hall_Right_GPIN_PIN:
+            Wheel_Hall_Callback(GPIOE, GPIO_Pin, &wheels[2]);
+            // UWheels_Hall_Callback(2);
+            break;
+        default:
+            // printf("EXTI %d\n", GPIO_Pin);
+            break;
+    }
 }

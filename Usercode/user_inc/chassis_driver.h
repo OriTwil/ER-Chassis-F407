@@ -36,17 +36,17 @@ typedef __IO struct
     VESC_t hvesc;
 } uni_wheel_t;
 
-void Chassis_Init(uni_wheel_t *wheel); //!
+void Chassis_Init(uni_wheel_t *wheel);
 
 void Wheel_Set(uni_wheel_t *wheel, double speed, double rot_pos);
 
 void Wheel_SetXY(uni_wheel_t *wheel, double speed_x, double speed_y);
 
-void Wheels_CalcTransmit(uni_wheel_t wheel[], int num); //!
+void Wheels_CalcTransmit(uni_wheel_t wheel[], int num);
 
 void Chassis_SetOrigin(uni_wheel_t *wheel, double origin_x, double origin_y);
 
-void Chassis_SetSpeed(uni_wheel_t *wheel, int num, double vx, double vy, double ang_v); //!
+void Chassis_SetSpeed(uni_wheel_t *wheel, int num, double vx, double vy, double ang_v);
 
 void Wheel_Hall_Callback(GPIO_TypeDef *GPIOx, uint16_t GPIO_Pin, uni_wheel_t *wheel);
 

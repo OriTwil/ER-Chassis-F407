@@ -10,11 +10,11 @@
  */
 #ifndef  __CHASSIS_COMMUNICATE_H__
 
-#include "mavlink.h"
 #include "usart.h"
+#include "wtr_mavlink.h"
 
-void CtrlDataSender_Init(UART_HandleTypeDef *huart, mavlink_channel_t chan);
+void CommunicateInit(UART_HandleTypeDef *huart, mavlink_channel_t chan);
 
-void CtrlDataSender_Start();
+void CommunicateStart();
 
 #endif
