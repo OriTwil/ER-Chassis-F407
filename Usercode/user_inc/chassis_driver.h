@@ -15,9 +15,8 @@
 #include "user_main.h"
 #include "wtr_vesc.h"
 #include "wtr_dji.h"
-#
 
-typedef struct
+typedef __IO struct
 {
     double loc_x; // 舵轮在机器人坐标系中的位置
     double loc_y; // 舵轮在机器人坐标系中的位置
@@ -39,7 +38,7 @@ typedef struct
 
 void Chassis_Init(uni_wheel_t *wheel); //!
 
-void Wheel_Set(uni_wheel_t *wheel, double speed, double rot_pos); 
+void Wheel_Set(uni_wheel_t *wheel, double speed, double rot_pos);
 
 void Wheel_SetXY(uni_wheel_t *wheel, double speed_x, double speed_y);
 

@@ -20,7 +20,7 @@
 #define r_wheel      0.076 
 
 /*定义增量式PID结构体*/
-typedef struct
+typedef __IO struct
 {
     float setpoint; // 设定值
     float Kp;       // 比例系数
@@ -34,7 +34,7 @@ typedef struct
 } PID_Incremwntal;
 
 /*定义位置式PID结构体*/
-typedef struct {
+typedef __IO struct {
     float limit;    // 输出限幅
     float target;   // 目标量
     float feedback; // 反馈量

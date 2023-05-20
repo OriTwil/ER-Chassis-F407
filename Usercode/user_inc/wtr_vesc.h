@@ -107,7 +107,6 @@ typedef enum {
 CAN_PACKET_ID;
 #endif
 
-
 typedef enum {
 FAULT_CODE_NONE = 0,
 FAULT_CODE_OVER_VOLTAGE,
@@ -148,7 +147,6 @@ typedef struct{
 }
 MOTOR_PROPERTY;
 
-
 typedef struct{
 #ifdef __VESC_CAN_ENABLE	
 	CAN_HandleTypeDef * hcann;
@@ -159,7 +157,6 @@ typedef struct{
 //	
 //#endif
 }VESC_t;
-
 
 #ifdef __VESC_UART_ENABLE
 HAL_StatusTypeDef uart_send_command(VESC_t *hvesc, const COMM_PACKET_ID id, float value, uint32_t timeout);

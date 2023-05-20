@@ -11,7 +11,8 @@
 #include "mavlink_msg_control.h"
 #include "chassis_driver.h"
 #include "state_management.h"
-
+#include "user_calculate.h"
+#include "wtr_uart.h"
 
 int counter          = 0;
 int test             = 0;
@@ -40,10 +41,10 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
     }
 }
 
-void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
-{
-	UD_TxCpltCallback(huart);
-}
+// void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
+// {
+// 	UD_TxCpltCallback(huart);
+// }
 
 /**
  * @brief 接收到完整消息且校验通过后会调用这个函数。在这个函数里调用解码函数就可以向结构体写入收到的数据

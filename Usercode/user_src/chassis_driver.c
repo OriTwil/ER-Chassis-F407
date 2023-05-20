@@ -21,7 +21,7 @@
 
 bool Reseting;
 
-typedef struct
+typedef __IO struct
 {
     double wheel_distance;  // 两个轮子之间的距离
     double chassis_radius;  // 轮子中心到几何中心距离
@@ -57,6 +57,7 @@ double LoopSimplify(double cycle, double value)
     return mod_value;
 }
 
+// 设置轮子速度，角度
 void Wheel_Set(uni_wheel_t *wheel, double speed, double rot_pos)
 {
     wheel->exp_speed   = speed;
@@ -127,7 +128,7 @@ void Wheel_Hall_Callback(GPIO_TypeDef *GPIOx, uint16_t GPIO_Pin, uni_wheel_t *wh
             Wheel_ReadNowRotPos(wheel);
         }
     }
-}// 上升沿 下降沿 均要触发中断
+} // 上升沿 下降沿 均要触发中断
 
 void Wheels_CANTransmit(uni_wheel_t wheel[])
 {
@@ -166,7 +167,7 @@ void Wheels_CalcTransmit(uni_wheel_t wheel[], int num)
 void Chassis_Init(uni_wheel_t *wheel)
 {
     for (int i = 0; i < 3; i++) {
-        memset(&wheel[i], 0, sizeof(uni_wheel_t));
+        memset((void *)&wheel[i], 0, sizeof(uni_wheel_t));
     }
 
     Chassis_SetOrigin(wheel, 0, 0);
@@ -189,7 +190,12 @@ void Chassis_Init(uni_wheel_t *wheel)
         wheel[i].rot_pos_ratio  = 191;
         wheel[i].speed_ratio    = 2938;
         wheel[i].rot_pos_offset = 0;
-        // wheel[i].rot_pos_offset = -M_PI/2;
+        // wheel[i].exp_rot_pos    = 0;
+        // wheel[i].hall_off_pos   = 0;
+        // wheel[i].hall_on_flag   = 0;
+        // wheel[i].hall_on_pos    = 0;
+        // wheel[i].now_rot_pos    = 0;
+        // wheel[i].exp_speed      = 0;
     }
 }
 
@@ -209,7 +215,7 @@ void Chassis_SetSpeed(uni_wheel_t *wheel, int num, double vx, double vy, double 
     }
 
     Wheels_CalcTransmit(wheel, num);
-}
+} //! servo不调用这个
 
 /**
  * @brief 设置底盘坐标系的原点

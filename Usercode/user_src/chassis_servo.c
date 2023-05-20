@@ -1,6 +1,8 @@
 #include "chassis_servo.h"
 #include "user_config.h"
 #include "state_management.h"
+#include "can.h"
+#include "wtr_can.h"
 
 /**
  * @description: 伺服线程

@@ -18,12 +18,15 @@
 #include "mavlink_msg_controller.h"
 #include "state_management.h"
 #include "user_config.h"
+#include "user_calculate.h"
 
 #define rx_DEADBAND 100.0
 
 uni_wheel_t wheels[3];
 double HallCorrectingStartPos[3];
 uint32_t HallCorrectingStartTick;
+double vx_deadbanded = 0;
+double vy_deadbanded = 0;
 
 GPIO_PinState state_gpio9  = GPIO_PIN_SET;
 GPIO_PinState state_gpio10 = GPIO_PIN_SET;
@@ -31,9 +34,6 @@ GPIO_PinState state_gpio11 = GPIO_PIN_SET;
 
 void ChassisTask(void const *argument)
 {
-    double vx, vy, vrow;
-    double spin_ratio = 1.0 / 1024.0;
-    double lx, ly, rx;
 
     vTaskDelay(200);
 
@@ -41,20 +41,29 @@ void ChassisTask(void const *argument)
 
         switch (Chassis_component.Chassis_State) {
             case Locked:
-                SetChassisVelocity(&Chassis_control, &Wheel_component);
                 SetWheelsRef(Wheel_Front, 0, Wheel_Front_Locked_Pos, &Wheel_component);
                 SetWheelsRef(Wheel_Left, 0, Wheel_Left_Locked_Pos, &Wheel_component);
                 SetWheelsRef(Wheel_Right, 0, Wheel_Right_Locked_Pos, &Wheel_component);
                 break;
             case HallCorrecting:
-                ChassisHallCorrect(720, &Chassis_component);
+                ChassisHallCorrect(720, &Wheel_component);
                 break;
             case RemoteControl:
-                // Chassis_SetSpeed(wheels, 3, FrameTransform(&control, &mav_posture).vx_set + PID_Position(&pid_pos_x_pos),
-                //                  FrameTransform(&control, &mav_posture).vy_set + PID_Position(&pid_pos_y_pos),
-                //                  control.vw_set + PID_Position(&pid_pos_w_pos));
+                vPortEnterCritical();
+                SetChassisPosition(mav_posture.pos_x, mav_posture.pos_y, mav_posture.zangle, &Chassis_position);                                                            // 更新底盘位置
+                DeadBand((double)crl_speed.vx, (double)crl_speed.vy, &vx_deadbanded, &vy_deadbanded, 0.1);                                                                  // 死区控制 DJI遥控器摇杆
+                SetChassisControlPosition(Chassis_position.Chassis_Position_x, Chassis_position.Chassis_Position_y, Chassis_position.Chassis_Position_w, &Chassis_control); // 没什么用，反正这个状态用不到PID
+                SetChassisControlVelocity(vx_deadbanded, vy_deadbanded, crl_speed.vw, &Chassis_control);
+                CalculateWheels(&Chassis_control,&Wheel_component);                                                       // 用摇杆控制底盘
+                vPortExitCritical();
                 break;
             case ComputerControl:
+                vPortEnterCritical();
+                SetChassisPosition(mav_posture.pos_x, mav_posture.pos_y, mav_posture.zangle, &Chassis_position  ); // 更新底盘位置
+                SetChassisControlPosition(control.x_set, control.y_set, control.w_set, &Chassis_control);       // 上位机规划值作为伺服值
+                SetChassisControlVelocity(control.vx_set, control.vy_set, control.vw_set, &Chassis_control);    // 上位机规划值作为伺服值
+                CalculateWheels(&Chassis_control,&Wheel_component);
+                vPortExitCritical();
                 break;
             default:
                 break;

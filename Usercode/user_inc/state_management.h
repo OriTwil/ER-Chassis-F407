@@ -38,7 +38,7 @@ typedef enum {
     Pickup,
     Fire
 } PICKUP_STATE;
-
+    
 typedef enum {
     First_Ring = 1,
     Second_Ring,
@@ -56,6 +56,7 @@ typedef __IO struct
     double rot_pos;
     SemaphoreHandle_t xMutex_wheel;
 } WHEEL_COMPONENT;
+
 typedef __IO struct
 {
     CHASSIS_STATE Chassis_State;
@@ -118,7 +119,7 @@ void SetChassisControlPosition(float x_control, float y_control, float w_control
 void PickupSwitchState(PICKUP_STATE target_pickup_state, PICKUP_COMPONENT *pickup_component);
 void PickupSwitchRing(PICKUP_RING target_pickup_ring, PICKUP_COMPONENT *pickup_component);
 
-void SetChassisVelocity(CHASSIS_CONTROL *chassis_control, WHEEL_COMPONENT *wheel_component);
+void CalculateWheels(CHASSIS_CONTROL *chassis_control, WHEEL_COMPONENT *wheel_component);
 void SetWheelsRef(int wheel_id, double target_speed, double target_pos, WHEEL_COMPONENT *wheel_component);
 void ServoWheels(WHEEL_COMPONENT *wheel_component);
 

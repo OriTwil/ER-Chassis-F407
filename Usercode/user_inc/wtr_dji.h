@@ -23,7 +23,7 @@ typedef enum {
     M2006
 } DJI_e;
 
-typedef struct {
+typedef __IO struct {
 
     DJI_e motorType;
 

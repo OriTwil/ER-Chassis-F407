@@ -14,6 +14,11 @@
 #include "wtr_uart.h"
 #include "wtr_mavlink.h"
 #include "state_management.h"
+#include "wtr_ads1256.h"
+#include "chassis_communicate.h"
+#include "chassis_machine.h"
+#include "chassis_servo.h"
+#include "chassis_perception.h"
 
 
 /**
@@ -49,3 +54,4 @@ void StartDefaultTask(void const *argument)
         osDelay(1);
     }
 }
+
