@@ -3,4 +3,6 @@
 
 #include "user_main.h"
 
+void ServoTaskStart();
+void MotorInit();
 #endif

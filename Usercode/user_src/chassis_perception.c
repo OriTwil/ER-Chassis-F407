@@ -19,8 +19,6 @@
  */
 void ChassisPerceptionTask(void const *argument)
 {
-    // 码盘定位系统通过串口收发信息
-    HAL_UART_Receive_IT(&huart_OPS, (uint8_t *)&ch, 1);
 
     // ADS1256_UpdateDiffData();
 
@@ -36,4 +34,11 @@ void PerceptionTaskStart()
 {
     osThreadDef(perception, ChassisPerceptionTask, osPriorityNormal, 0, 512);
     osThreadCreate(osThread(perception), NULL);
+}
+
+void PercerptionInit()
+{
+    // 码盘定位系统通过串口收发信息
+    HAL_UART_Receive_IT(&huart_OPS, (uint8_t *)&ch, 1);
+    ADS1256_Init();                                         // DT35距离传感器
 }

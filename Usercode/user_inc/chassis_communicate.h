@@ -13,7 +13,7 @@
 #include "usart.h"
 #include "wtr_mavlink.h"
 
-void CommunicateInit(UART_HandleTypeDef *huart, mavlink_channel_t chan);
+void CommunicateInit();
 
 void CommunicateStart();
 

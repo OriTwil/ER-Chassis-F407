@@ -3,6 +3,7 @@
 #include "state_management.h"
 #include "can.h"
 #include "wtr_can.h"
+#include "chassis_servo.h"
 
 /**
  * @description: 伺服线程

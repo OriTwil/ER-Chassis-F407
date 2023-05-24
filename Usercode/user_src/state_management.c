@@ -260,8 +260,9 @@ void CalculateWheels(CHASSIS_CONTROL *chassis_control, WHEEL_COMPONENT *wheel_co
 void ServoWheels(WHEEL_COMPONENT *wheel_component)
 {
     xSemaphoreTakeRecursive(wheel_component->xMutex_wheel, (TickType_t)10);
-    Wheels_CalcTransmit(wheel_component->wheels, 3);
+    WHEEL_COMPONENT wheel_component_temp = *wheel_component;
     xSemaphoreGiveRecursive(wheel_component->xMutex_wheel);
+    Wheels_CalcTransmit(wheel_component_temp.wheels, 3);
 }
 
 void SetWheelsRef(int wheel_id, double target_speed, double target_pos, WHEEL_COMPONENT *wheel_component)
