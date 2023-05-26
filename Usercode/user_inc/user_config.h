@@ -91,6 +91,10 @@
 #define BeepPinGPIOx    GPIOD
 #define BeepPinGPIO_Pin GPIO_PIN_7
 
+#define huart_Computer huart4
+#define huart_Remote_Control huart5
+#define huart_Chassis_to_Upper huart6
+
 // wtr_ads1256_config.h
 #define ADS1256_DRDY_GPIOx     GPIOA
 #define ADS1256_DRDY_GPIO_Pin  GPIO_PIN_4

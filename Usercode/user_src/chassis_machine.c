@@ -38,8 +38,12 @@ void ChassisTask(void const *argument)
     vTaskDelay(200);
 
     for (;;) {
-
-        switch (Chassis_component.Chassis_State) {
+        vPortEnterCritical();
+        mavlink_posture_t mav_posture_temp = mav_posture;
+        mavlink_control_t control_temp     = control;
+        vPortExitCritical(); // 拷贝
+        CHASSIS_COMPONENT Chassis_component_temp = ReadChassisComnent(&Chassis_component);
+        switch (Chassis_component_temp.Chassis_State) {
             case Locked:
                 SetWheelsRef(Wheel_Front, 0, Wheel_Front_Locked_Pos, &Wheel_component);
                 SetWheelsRef(Wheel_Left, 0, Wheel_Left_Locked_Pos, &Wheel_component);
@@ -49,11 +53,11 @@ void ChassisTask(void const *argument)
                 ChassisHallCorrect(720, &Wheel_component);
                 break;
             case RemoteControl:
-                vPortEnterCritical(); // todo 如果卡住就改成先拷贝数据
-                SetChassisPosition(mav_posture.pos_x,
-                                   mav_posture.pos_y,
-                                   mav_posture.zangle,
+                SetChassisPosition(mav_posture_temp.pos_x,
+                                   mav_posture_temp.pos_y,
+                                   mav_posture_temp.zangle,
                                    &Chassis_position); // 更新底盘位置
+                vPortEnterCritical();
                 DeadBand((double)crl_speed.vx,
                          (double)crl_speed.vy,
                          &vx_deadbanded,
@@ -67,14 +71,10 @@ void ChassisTask(void const *argument)
                                           vy_deadbanded,
                                           crl_speed.vw,
                                           &Chassis_control);
-                CalculateWheels(&Chassis_control, &Wheel_component); // 用摇杆控制底盘
                 vPortExitCritical();
+                CalculateWheels(&Chassis_control, &Wheel_component); // 用摇杆控制底盘
                 break;
             case ComputerControl:
-                vPortEnterCritical();
-                mavlink_posture_t mav_posture_temp = mav_posture;
-                mavlink_control_t control_temp     = control;
-                vPortExitCritical(); //拷贝
 
                 SetChassisPosition(mav_posture_temp.pos_x,
                                    mav_posture_temp.pos_y,

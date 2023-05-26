@@ -16,14 +16,14 @@ void ServoTask(void const *argument)
     vTaskDelay(20);
     for (;;) {
         // 更新PID的目标值和反馈值
-        xSemaphoreTakeRecursive(Chassis_control.xMutex_control,portMAX_DELAY);
+        xSemaphoreTakeRecursive(Chassis_control.xMutex_control, portMAX_DELAY);
         SetPIDTarget(Chassis_control.Chassis_Control_x,
                      Chassis_control.Chassis_Control_y,
                      Chassis_control.Chassis_Control_w,
                      &Chassis_pid);
         xSemaphoreGiveRecursive(Chassis_control.xMutex_control);
 
-        xSemaphoreTakeRecursive(Chassis_position.xMutex_position,portMAX_DELAY);
+        xSemaphoreTakeRecursive(Chassis_position.xMutex_position, portMAX_DELAY);
         SetPIDFeedback(Chassis_position.Chassis_Position_x,
                        Chassis_position.Chassis_Position_y,
                        Chassis_position.Chassis_Position_w,

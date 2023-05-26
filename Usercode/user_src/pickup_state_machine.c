@@ -1,6 +1,7 @@
 #include "pickup_state_machine.h"
 #include "state_management.h"
 
+//todo 根据机械写状态机
 void PickupTask(void const *argument)
 {
     vTaskDelay(200);
@@ -8,7 +9,6 @@ void PickupTask(void const *argument)
     for (;;) {
         switch (Pickup_component.Pickup_State) {
             case Ready:
-
                 break;
             case Pickup:
                 break;

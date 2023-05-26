@@ -16,6 +16,7 @@ CHASSIS_POSITION Chassis_position;
 // 变量定义
 mavlink_posture_t mav_posture;
 mavlink_control_t control;
+mavlink_chassis_to_upper_t chassis_data;
 mavlink_controller_t ControllerData;
 TaskHandle_t g_stateManagementTaskHandle;
 
@@ -338,4 +339,13 @@ void ChassisHallCorrect(float target_angle, WHEEL_COMPONENT *wheel_component) //
     } while (!isArrive);
 }
 
-//todo 码盘坐标系转换函数、底盘坐标系转换函数
+CHASSIS_COMPONENT ReadChassisComnent(CHASSIS_COMPONENT *chassis_component)
+{
+    CHASSIS_COMPONENT chassis_component_temp;
+    xSemaphoreTakeRecursive(chassis_component->xMutex_chassis, (TickType_t)10);
+    chassis_component_temp = *chassis_component;
+    xSemaphoreGiveRecursive(chassis_component->xMutex_chassis);
+    return chassis_component_temp;
+}
+
+// todo 码盘坐标系转换函数、底盘坐标系转换函数

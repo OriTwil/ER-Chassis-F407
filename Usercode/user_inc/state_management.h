@@ -38,7 +38,7 @@ typedef enum {
     Pickup,
     Fire
 } PICKUP_STATE;
-    
+
 typedef enum {
     First_Ring = 1,
     Second_Ring,
@@ -125,6 +125,9 @@ void ServoWheels(WHEEL_COMPONENT *wheel_component);
 
 void VelocityPlanning(float initialAngle, float maxAngularVelocity, float AngularAcceleration, float targetAngle, float currentTime, float *currentAngle);
 void ChassisHallCorrect(float target_angle, WHEEL_COMPONENT *wheel_component);
+
+CHASSIS_COMPONENT ReadChassisComnent(CHASSIS_COMPONENT *chassis_component);
+
 extern CHASSIS_COMPONENT Chassis_component;
 extern PERCEPTION_COMPONENT Perception_component;
 extern CHASSIS_PID Chassis_pid;
@@ -134,6 +137,7 @@ extern CHASSIS_POSITION Chassis_position;
 extern WHEEL_COMPONENT Wheel_component;
 extern mavlink_posture_t mav_posture;
 extern mavlink_control_t control;
+extern mavlink_chassis_to_upper_t chassis_data;
 extern mavlink_controller_t ControllerData;
 extern TaskHandle_t g_stateManagementTaskHandle;
 
