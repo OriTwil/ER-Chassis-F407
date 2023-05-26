@@ -4,6 +4,9 @@ ER robot chassis for ROBOCON 2023, ported to STM32F407 MCU.
 
 ## "Elephent Robot"
 
+## Dynamics
+<image src="https://github.com/OriTwil/ER-Chassis-F407/blob/main/picture/er_cal.jpg" width="600">
+
 ## Version History
 - 2023.4.11: Initial release. Requires further development to finalize remote control operation, improve code reliability and compliance.
 
