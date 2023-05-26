@@ -30,8 +30,8 @@ typedef __IO struct
 } Chassis_Axes_t;
 
 Chassis_Axes_t chassis_axes = {
-    .wheel_distance  = 0.5542562,
-    .chassis_radius  = 0.32,
+    .wheel_distance  = 0.5546,
+    .chassis_radius  = 0.3202,
     .origin_offset_x = 0,
     .origin_offset_y = 0};
 
@@ -171,9 +171,9 @@ void Chassis_Init(uni_wheel_t *wheel)
     }
 
     Chassis_SetOrigin(wheel, 0, 0);
-    wheel[0].hDJI = &hDJI[6];
-    wheel[1].hDJI = &hDJI[4];
-    wheel[2].hDJI = &hDJI[5];
+    wheel[0].hDJI = &hDJI[4];
+    wheel[1].hDJI = &hDJI[5];
+    wheel[2].hDJI = &hDJI[6];
 
     wheel[0].hvesc.hcann         = &hcan1;
     wheel[0].hvesc.controller_id = 0x03;
@@ -187,15 +187,9 @@ void Chassis_Init(uni_wheel_t *wheel)
     wheel[2].hall_angle = 315.0 / 180 * M_PI; //? 还不知道安装 情况
 
     for (int i = 0; i < 3; i++) {
-        wheel[i].rot_pos_ratio  = 191;
-        wheel[i].speed_ratio    = 2938;
+        wheel[i].rot_pos_ratio  = 171.887338539247;
+        wheel[i].speed_ratio    = 4965.6342;
         wheel[i].rot_pos_offset = 0;
-        // wheel[i].exp_rot_pos    = 0;
-        // wheel[i].hall_off_pos   = 0;
-        // wheel[i].hall_on_flag   = 0;
-        // wheel[i].hall_on_pos    = 0;
-        // wheel[i].now_rot_pos    = 0;
-        // wheel[i].exp_speed      = 0;
     }
 }
 
@@ -229,12 +223,21 @@ void Chassis_SetOrigin(uni_wheel_t *wheel, double origin_x, double origin_y)
     chassis_axes.origin_offset_x = origin_x;
     chassis_axes.origin_offset_y = origin_y;
 
-    wheel[0].loc_x = chassis_axes.chassis_radius - chassis_axes.origin_offset_x;
-    wheel[0].loc_y = 0 - chassis_axes.origin_offset_y; // 前车轮
+    // wheel[0].loc_x = chassis_axes.chassis_radius - chassis_axes.origin_offset_x;
+    // wheel[0].loc_y = 0 - chassis_axes.origin_offset_y; // 前车轮
 
-    wheel[1].loc_x = -chassis_axes.chassis_radius / 2 - chassis_axes.origin_offset_x;
-    wheel[1].loc_y = chassis_axes.wheel_distance / 2 - chassis_axes.origin_offset_y; // 左后车轮
+    // wheel[1].loc_x = -chassis_axes.chassis_radius / 2 - chassis_axes.origin_offset_x;
+    // wheel[1].loc_y = chassis_axes.wheel_distance / 2 - chassis_axes.origin_offset_y; // 左后车轮
 
-    wheel[2].loc_x = -chassis_axes.chassis_radius / 2 - chassis_axes.origin_offset_x;
-    wheel[2].loc_y = -chassis_axes.wheel_distance / 2 - chassis_axes.origin_offset_y; // 右后车轮
+    // wheel[2].loc_x = -chassis_axes.chassis_radius / 2 - chassis_axes.origin_offset_x;
+    // wheel[2].loc_y = -chassis_axes.wheel_distance / 2 - chassis_axes.origin_offset_y; // 右后车轮
+
+    wheel[0].loc_x = 0 - chassis_axes.origin_offset_x;
+    wheel[0].loc_y = chassis_axes.chassis_radius - chassis_axes.origin_offset_y; // 前车轮
+
+    wheel[1].loc_x = -(chassis_axes.wheel_distance / 2) - chassis_axes.origin_offset_x;
+    wheel[1].loc_y = -(chassis_axes.chassis_radius / 2) - chassis_axes.origin_offset_y; // 左后车轮
+
+    wheel[2].loc_x = (chassis_axes.wheel_distance / 2) - chassis_axes.origin_offset_x;
+    wheel[2].loc_y = -(chassis_axes.chassis_radius / 2) - chassis_axes.origin_offset_y; // 右后车轮
 }

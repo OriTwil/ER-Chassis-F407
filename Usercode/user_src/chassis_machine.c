@@ -49,24 +49,46 @@ void ChassisTask(void const *argument)
                 ChassisHallCorrect(720, &Wheel_component);
                 break;
             case RemoteControl:
-                vPortEnterCritical();                                                                            // todo 如果卡住就改成先拷贝数据
-                SetChassisPosition(mav_posture.pos_x, mav_posture.pos_y, mav_posture.zangle, &Chassis_position); // 更新底盘位置
-                DeadBand((double)crl_speed.vx, (double)crl_speed.vy, &vx_deadbanded, &vy_deadbanded, 0.1);       // 死区控制 DJI遥控器摇杆
+                vPortEnterCritical(); // todo 如果卡住就改成先拷贝数据
+                SetChassisPosition(mav_posture.pos_x,
+                                   mav_posture.pos_y,
+                                   mav_posture.zangle,
+                                   &Chassis_position); // 更新底盘位置
+                DeadBand((double)crl_speed.vx,
+                         (double)crl_speed.vy,
+                         &vx_deadbanded,
+                         &vy_deadbanded,
+                         0.1); // 死区控制 DJI遥控器摇杆
                 SetChassisControlPosition(Chassis_position.Chassis_Position_x,
                                           Chassis_position.Chassis_Position_y,
                                           Chassis_position.Chassis_Position_w,
                                           &Chassis_control); // 没什么用，反正这个状态用不到PID
-                SetChassisControlVelocity(vx_deadbanded, vy_deadbanded, crl_speed.vw, &Chassis_control);
+                SetChassisControlVelocity(vx_deadbanded,
+                                          vy_deadbanded,
+                                          crl_speed.vw,
+                                          &Chassis_control);
                 CalculateWheels(&Chassis_control, &Wheel_component); // 用摇杆控制底盘
                 vPortExitCritical();
                 break;
             case ComputerControl:
                 vPortEnterCritical();
-                SetChassisPosition(mav_posture.pos_x, mav_posture.pos_y, mav_posture.zangle, &Chassis_position); // 更新底盘位置
-                SetChassisControlPosition(control.x_set, control.y_set, control.w_set, &Chassis_control);        // 上位机规划值作为伺服值
-                SetChassisControlVelocity(control.vx_set, control.vy_set, control.vw_set, &Chassis_control);     // 上位机规划值作为伺服值
+                mavlink_posture_t mav_posture_temp = mav_posture;
+                mavlink_control_t control_temp     = control;
+                vPortExitCritical(); //拷贝
+
+                SetChassisPosition(mav_posture_temp.pos_x,
+                                   mav_posture_temp.pos_y,
+                                   mav_posture_temp.zangle,
+                                   &Chassis_position); // 更新底盘位置
+                SetChassisControlPosition(control_temp.x_set,
+                                          control_temp.y_set,
+                                          control_temp.w_set,
+                                          &Chassis_control); // 上位机规划值作为伺服值
+                SetChassisControlVelocity(control_temp.vx_set,
+                                          control_temp.vy_set,
+                                          control_temp.vw_set,
+                                          &Chassis_control); // 上位机规划值作为伺服值
                 CalculateWheels(&Chassis_control, &Wheel_component);
-                vPortExitCritical();
                 break;
             default:
                 break;

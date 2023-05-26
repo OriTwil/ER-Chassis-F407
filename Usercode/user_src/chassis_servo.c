@@ -16,8 +16,19 @@ void ServoTask(void const *argument)
     vTaskDelay(20);
     for (;;) {
         // 更新PID的目标值和反馈值
-        SetPIDTarget(Chassis_control.Chassis_Control_x, Chassis_control.Chassis_Control_y, Chassis_control.Chassis_Control_w, &Chassis_pid);
-        SetPIDFeedback(Chassis_position.Chassis_Position_x, Chassis_position.Chassis_Position_y, Chassis_position.Chassis_Position_w, &Chassis_pid);
+        xSemaphoreTakeRecursive(Chassis_control.xMutex_control,portMAX_DELAY);
+        SetPIDTarget(Chassis_control.Chassis_Control_x,
+                     Chassis_control.Chassis_Control_y,
+                     Chassis_control.Chassis_Control_w,
+                     &Chassis_pid);
+        xSemaphoreGiveRecursive(Chassis_control.xMutex_control);
+
+        xSemaphoreTakeRecursive(Chassis_position.xMutex_position,portMAX_DELAY);
+        SetPIDFeedback(Chassis_position.Chassis_Position_x,
+                       Chassis_position.Chassis_Position_y,
+                       Chassis_position.Chassis_Position_w,
+                       &Chassis_pid);
+        xSemaphoreGiveRecursive(Chassis_position.xMutex_position);
 
         // 伺服控制
         ServoWheels(&Wheel_component);

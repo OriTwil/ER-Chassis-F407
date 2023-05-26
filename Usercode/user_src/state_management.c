@@ -26,30 +26,8 @@ TaskHandle_t g_stateManagementTaskHandle;
  */
 void StateManagemantTask(void const *argument)
 {
-    uint32_t notificationValue;
     vTaskDelay(20);
     for (;;) {
-        xTaskNotifyWait(0, 0, &notificationValue, portMAX_DELAY);
-
-        // 处理按键通知
-        if (notificationValue & BUTTON1_NOTIFICATION) {
-            // 执行按键1的操作
-            //  FireSwitchNumber
-            //  PickupSwitchStep
-            //  PickupSwitchState
-            //  SetServoRefPickupTrajectory(0, 0, 195, &Pickup_ref);
-            //  ...
-        }
-
-        if (notificationValue & BUTTON2_NOTIFICATION) {
-            // 执行按键2的操作
-            // ...
-        }
-
-        if (notificationValue & BUTTON3_NOTIFICATION) {
-            // 执行按键3的操作
-            // ...
-        }
         vTaskDelay(10);
     }
 }
@@ -359,3 +337,5 @@ void ChassisHallCorrect(float target_angle, WHEEL_COMPONENT *wheel_component) //
         vTaskDelay(2);
     } while (!isArrive);
 }
+
+//todo 码盘坐标系转换函数、底盘坐标系转换函数
