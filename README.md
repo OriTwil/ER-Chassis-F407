@@ -2,21 +2,22 @@
 
 ER robot chassis for ROBOCON 2023, ported to STM32F407 MCU.
 
-## "Elephent Robot"
+## Elephent Robot
 
+## File Description
+- Usercode folder, to facilitate porting.
+- <image src="https://github.com/OriTwil/ER-Chassis-F407/blob/main/picture/New_code_structure.png" width="1000">
+  
 ## Dynamics
-<image src="https://github.com/OriTwil/ER-Chassis-F407/blob/main/picture/er_cal.jpg" width="600">
 
 ## Version History
 - 2023.4.11: Initial release. Requires further development to finalize remote control operation, improve code reliability and compliance.
+- 2023.5.27: The basic completion of the entire code, only the remote controller and operation design part are left, and parameter adjustment is needed.
 
 ## Installation and Usage
 - Clone the repository.
 - For VS Code users, open the workspace file directly.
 - For Keil users, modify CubeMX settings, regenerate the project, copy the Usercode folder and modify main.c (define the clock callback as weak).
-
-## File Description
-- Usercode folder, to facilitate porting.
 
 ## Robot Hardware Specifications
 - The main control board is self-made by the hardware team (Xing) `Stm32F407`.
@@ -31,7 +32,7 @@ ER robot chassis for ROBOCON 2023, ported to STM32F407 MCU.
 - `Wireless debugger`: can be used as a wireless serial port and for wireless burning, debugging.
 
 ## Cable Routing Considerations
-### Cable Routing Experience
+#### Cable Routing Experience
 - For multiple wires or long cables, consider the cable's position during mechanical design (set grooves, through-holes, etc.).
 - Make use of adapter boards to reduce the number of wires (e.g., power and CAN signal wires). Use adapter boards instead of multiple wires to split the signal at the required locations.
 - Route cables to avoid interference with mechanical structures.
@@ -50,7 +51,7 @@ ER robot chassis for ROBOCON 2023, ported to STM32F407 MCU.
 - For main power cables, choose multi-strand wires for redundancy or thicker wires.
 - Consider interference resistance, use double-twisted method and short cable routing for signal cables (serial port, CAN), and use shielded wires for longer ones.
 
-### Common Cable Routing Consumables
+#### Common Cable Routing Consumables
 - Zip ties: used to fix cables, cut with diagonal pliers, generally black.
 <image src="https://github.com/OriTwil/ER-Chassis-F407/blob/main/picture/zip.jpg" width="300" height="210">
 
@@ -68,7 +69,7 @@ ER robot chassis for ROBOCON 2023, ported to STM32F407 MCU.
 - Drag chains.
 <image src="https://github.com/OriTwil/ER-Chassis-F407/blob/main/picture/tuolian.jpg" width="300" height="210">
 
-### Marking
+#### Marking
 - Indicate the location of sensors on the sensor control board/main control board (e.g., upper left, lower left; 1-①, 1-②, etc.).
 - Use the same color of marking tape or label paper at both ends of the same wire (used for one sensor). 
 
