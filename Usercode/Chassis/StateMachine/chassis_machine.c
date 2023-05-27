@@ -19,7 +19,8 @@
 #include "chassis_commen.h"
 #include "user_config.h"
 #include "wtr_calculate.h"
-#include "chassis_communicate.h""
+#include "chassis_communicate.h"
+#include "chassis_servo.h"
 
 #define rx_DEADBAND 100.0
 
