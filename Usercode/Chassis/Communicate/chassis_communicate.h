@@ -21,6 +21,5 @@ void CommunicateStart();
 extern mavlink_posture_t mav_posture;
 extern mavlink_control_t control;
 extern mavlink_chassis_to_upper_t chassis_data;
-// extern mavlink_controller_t ControllerData;
 
 #endif

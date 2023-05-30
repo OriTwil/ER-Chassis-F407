@@ -6,11 +6,11 @@
 #include "wtr_calculate.h"
 #include "semphr.h"
 #include "wtr_mavlink.h"
-#include "mavlink_msg_controller.h"
 #include "chassis_commen.h"
 
 void StateManagemantTaskStart();
 void StateInit();
 void PIDInit();
+void JoystickControl();
 
 #endif

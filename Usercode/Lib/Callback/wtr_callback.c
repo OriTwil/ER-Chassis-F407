@@ -7,13 +7,13 @@
  */
 
 #include "wtr_callback.h"
-#include "mavlink_msg_controller.h"
 #include "mavlink_msg_control.h"
 #include "chassis_driver.h"
 #include "chassis_communicate.h"
 #include "wtr_calculate.h"
 #include "wtr_uart.h"
 #include "user_config.h"
+#include "chassis_remote_control.h"
 
 float w_speed      = 0;
 int16_t crldata[4] = {0};
@@ -22,7 +22,6 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
     // 上位机消息
     if (huart->Instance == UART_Computer) {
-        // UART1Decode();//AS69解码
         wtrMavlink_UARTRxCpltCallback(huart, MAVLINK_COMM_0); // 进入mavlink回调
     }
     // 定位模块消息
@@ -32,16 +31,8 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
     }
     if (huart->Instance == UART_AS69) {
         AS69_Decode(); // AS69解码
-        // crl_speed.vy = (float ) (crldata[0] - CH0_BIAS)/CH_RANGE * 1;
-        // crl_speed.vx = (float ) (crldata[1] - CH1_BIAS)/CH_RANGE * 1;
-        // crl_speed.vw = (float ) (crldata[2] - CH2_BIAS)/CH_RANGE * 1;
     }
 }
-
-// void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
-// {
-// 	UD_TxCpltCallback(huart);
-// }
 
 /**
  * @brief 接收到完整消息且校验通过后会调用这个函数。在这个函数里调用解码函数就可以向结构体写入收到的数据
@@ -49,18 +40,16 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
  * @param msg 接收到的消息
  * @return
  */
-extern volatile mavlink_controller_t ControllerData;
 void wtrMavlink_MsgRxCpltCallback(mavlink_message_t *msg)
 {
 
     switch (msg->msgid) {
-        case 9:
-            // id = 9 的消息对应的解码函数(mavlink_msg_xxx_decode)
+        case MAVLINK_MSG_ID_CONTROL:
+            // 消息对应的解码函数(mavlink_msg_xxx_decode)
             mavlink_msg_control_decode(msg, &control);
             break;
-        case 1:
-            // id = 1 的消息对应的解码函数(mavlink_msg_xxx_decode)
-            // mavlink_msg_controller_decode(msg, &ControllerData); // 遥控器
+        case MAVLINK_MSG_ID_JOYSTICK_AIR:
+            mavlink_msg_joystick_air_decode(msg,&msg_joystick_air);
             break;
         // ......
         default:

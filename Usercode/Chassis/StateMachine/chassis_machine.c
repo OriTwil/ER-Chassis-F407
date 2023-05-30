@@ -15,7 +15,6 @@
 #include "wtr_mavlink.h"
 #include "wtr_uart.h"
 #include "user_config.h"
-#include "mavlink_msg_controller.h"
 #include "chassis_commen.h"
 #include "user_config.h"
 #include "wtr_calculate.h"

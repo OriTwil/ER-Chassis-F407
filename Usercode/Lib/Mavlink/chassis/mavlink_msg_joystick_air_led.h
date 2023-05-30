@@ -4,7 +4,7 @@
 #define MAVLINK_MSG_ID_JOYSTICK_AIR_LED 210
 
 
-typedef struct __mavlink_joystick_air_led_t {
+typedef __IO struct __mavlink_joystick_air_led_t {
  float r; /*<   range: [0, 1] */
  float g; /*<   range: [0, 1] */
  float b; /*<   range: [0, 1] */

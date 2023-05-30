@@ -3,8 +3,7 @@
 
 #define MAVLINK_MSG_ID_JOYSTICK_AIR 209
 
-
-typedef struct __mavlink_joystick_air_t {
+typedef __IO struct __mavlink_joystick_air_t {
  uint32_t buttons; /*<   Buttons */
  float joystickL[2]; /*<   [0]: x pos [1]: y pos */
  float joystickR[2]; /*<   [0]: x pos [1]: y pos */

@@ -20,6 +20,7 @@
 #include "chassis_servo.h"
 #include "chassis_perception.h"
 #include "chassis_operate_app.h"
+#include "chassis_remote_control.h"
 /**
  * @description: 初始化与开启线程
  * @author: szf
@@ -30,16 +31,18 @@ void StartDefaultTask(void const *argument)
 {
     /*初始化*/
     StateInit();
-    MotorInit();       // 电机初始化
-    CommunicateInit(); // 通信初始化
-    PercerptionInit(); // 定位初始化
+    MotorInit();         // 电机初始化
+    CommunicateInit();   // 通信初始化
+    PercerptionInit();   // 定位初始化
+    RemoteControlInit(); // 遥控器初始化
 
     /*开启线程*/
-    PerceptionTaskStart(); // 底盘感知定位线程
-    ChassisTaskStart();    // 舵轮底盘线程
-    ServoTaskStart();                     // 伺服线程
-    CommunicateStart();                   // 通信线程
-    StateManagemantTaskStart();           // 切换状态线程
+    PerceptionTaskStart();      // 底盘感知定位线程
+    ChassisTaskStart();         // 舵轮底盘线程
+    ServoTaskStart();           // 伺服线程
+    CommunicateStart();         // 通信线程
+    StateManagemantTaskStart(); // 切换状态线程
+    RemoteControlStart();       // 遥控器
 
     for (;;) {
         osDelay(1);

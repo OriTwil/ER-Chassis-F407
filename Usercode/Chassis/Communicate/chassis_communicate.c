@@ -20,20 +20,13 @@
 mavlink_posture_t mav_posture;
 mavlink_control_t control;
 mavlink_chassis_to_upper_t chassis_data;
-// mavlink_controller_t ControllerData;
 
 void CommunicateInit()
 {
-    // todo 完善通信部分
-    //  WTR_MAVLink_Init(huart, chan);
     wtrMavlink_BindChannel(&huart_Computer, MAVLINK_COMM_0); // MAVLINK上位机
-    wtrMavlink_BindChannel(&huart_Remote_Control, MAVLINK_COMM_1); // MAVLINK遥控器
     wtrMavlink_BindChannel(&huart_Chassis_to_Upper, MAVLINK_COMM_2); // MAVLINK板间通信
     wtrMavlink_StartReceiveIT(MAVLINK_COMM_0);       // 以mavlink接收上位机通过串口发送的消息
-    wtrMavlink_StartReceiveIT(MAVLINK_COMM_1);       // 以mavlink接收遥控器
     wtrMavlink_StartReceiveIT(MAVLINK_COMM_2);       // 接收板间通信
-
-    HAL_UART_Receive_DMA(&huart1, JoyStickReceiveData, 18); // DMA接收AS69
 }
 
 void CommunicateTask(void const *argument)

@@ -1,5 +1,4 @@
 #include "chassis_operate_app.h"
-#include "mavlink_msg_controller.h"
 #include "semphr.h"
 #include "chassis_communicate.h"
 #include "chassis_machine.h"
@@ -8,6 +7,7 @@
 #include "user_config.h"
 #include "chassis_commen.h"
 #include "pickup_state_machine.h"
+#include "chassis_remote_control.h"
 
 /**
  * @description: 操作线程
@@ -28,7 +28,7 @@ void StateManagemantTask(void const *argument)
  */
 void StateManagemantTestTask(void const *argument)
 {
-    uint32_t PreviousWakeTime = osKernelSysTick();
+    uint32_t PreviousWakeTime = xTaskGetTickCount();
     vTaskDelay(20);
     for (;;) {
         vTaskDelayUntil(&PreviousWakeTime, 5);
@@ -49,6 +49,7 @@ void StateManagemantTaskStart()
     // osThreadCreate(osThread(statemanagementtest),NULL);
 }
 
+//todo 初始化分开,封装函数
 void StateInit()
 {
     Chassis_component.Chassis_Point  = First_Ring;
@@ -81,6 +82,8 @@ void StateInit()
 
     Wheel_component.xMutex_wheel = xSemaphoreCreateRecursiveMutex();
     Chassis_Init(Wheel_component.wheels);
+
+    msg_joystick_send.xMutex_joystick = xSemaphoreCreateRecursiveMutex();
 }
 
 /**
@@ -104,6 +107,12 @@ void PIDInit()
     Chassis_pid.Pid_pos_y.Ki    = 0;
     Chassis_pid.Pid_pos_y.Kd    = 0;
     Chassis_pid.Pid_pos_y.limit = 0.5;
+}
+
+void JoystickControl()
+{
+    /*设计操作手的操作*/
+    
 }
 
 // todo 码盘坐标系转换函数、底盘坐标系转换函数

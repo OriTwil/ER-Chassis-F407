@@ -4,7 +4,7 @@
 #define MAVLINK_MSG_ID_JOYSTICK_AIR_DASHBOARD_SET_MSG 212
 
 
-typedef struct __mavlink_joystick_air_dashboard_set_msg_t {
+typedef __IO struct __mavlink_joystick_air_dashboard_set_msg_t {
  uint8_t id; /*<  */
  char message[20]; /*<  */
 } mavlink_joystick_air_dashboard_set_msg_t;
