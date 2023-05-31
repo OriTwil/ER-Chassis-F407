@@ -20,6 +20,7 @@
 #include "wtr_calculate.h"
 #include "chassis_communicate.h"
 #include "chassis_servo.h"
+#include "chassis_remote_control.h"
 
 #define rx_DEADBAND 100.0
 
@@ -63,6 +64,9 @@ void ChassisTask(void const *argument)
                                    mav_posture_temp.pos_y,
                                    mav_posture_temp.zangle,
                                    &Chassis_position); // 更新底盘位置
+
+                // DJI_Control();
+                Joystick_Control();
                 vPortEnterCritical();
                 DeadBand((double)crl_speed.vx,
                          (double)crl_speed.vy,
@@ -218,4 +222,11 @@ CHASSIS_COMPONENT ReadChassisComnent(CHASSIS_COMPONENT *chassis_component)
     chassis_component_temp = *chassis_component;
     xSemaphoreGiveRecursive(chassis_component->xMutex_chassis);
     return chassis_component_temp;
+}
+
+void Joystick_Control()
+{
+    crl_speed.vx = ReadJoystickRight_x(msg_joystick_air);
+    crl_speed.vy = ReadJoystickRight_y(msg_joystick_air);
+    crl_speed.vw = ReadJoystickLeft_x(msg_joystick_air);
 }

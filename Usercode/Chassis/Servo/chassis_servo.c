@@ -5,6 +5,7 @@
 #include "chassis_servo.h"
 #include "chassis_commen.h"
 #include "chassis_machine.h"
+#include "chassis_driver.h"
 
 CHASSIS_PID Chassis_pid;
 

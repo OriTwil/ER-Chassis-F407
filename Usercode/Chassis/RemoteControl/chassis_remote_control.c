@@ -21,7 +21,7 @@ void RemoteControlInit()
     wtrMavlink_BindChannel(&huart_Remote_Control, MAVLINK_COMM_1); // MAVLINK遥控器
     wtrMavlink_StartReceiveIT(MAVLINK_COMM_1);                     // 以mavlink接收遥控器
 
-    HAL_UART_Receive_DMA(&huart1, JoyStickReceiveData, 18); // DMA接收AS69
+    HAL_UART_Receive_DMA(&huart_AS69, JoyStickReceiveData, 18); // DMA接收AS69
 }
 
 void RemoteControlStart()
@@ -57,7 +57,7 @@ void JoystickSwitchTitle(uint8_t id, char title[20], JOYSTICK_SEND *msg_joystick
 {
     xSemaphoreTakeRecursive(msg_joystick_send->xMutex_joystick, portMAX_DELAY);
     msg_joystick_send->msg_joystick_air_dashboard_set_title.id = id;
-    strncpy(msg_joystick_send->msg_joystick_air_dashboard_set_title.title, title, 20);
+    strncpy((char *)msg_joystick_send->msg_joystick_air_dashboard_set_title.title, title, 20);
     JOYSTICK_SEND msg_joystick_send_temp = *msg_joystick_send;
     xSemaphoreGiveRecursive(msg_joystick_send->xMutex_joystick);
 
@@ -68,7 +68,7 @@ void JoystickSwitchMsg(uint8_t id, char message[20], JOYSTICK_SEND *msg_joystick
 {
     xSemaphoreTakeRecursive(msg_joystick_send->xMutex_joystick, portMAX_DELAY);
     msg_joystick_send->msg_joystick_air_dashboard_set_msg.id = id;
-    strncpy(msg_joystick_send->msg_joystick_air_dashboard_set_msg.message, message, 20);
+    strncpy((char *)msg_joystick_send->msg_joystick_air_dashboard_set_msg.message, message, 20);
     xSemaphoreGiveRecursive(msg_joystick_send->xMutex_joystick);
 }
 

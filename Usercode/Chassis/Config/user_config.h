@@ -9,6 +9,14 @@
  */
 
 /**
+ * @todo 还需要做什么?!
+ *
+ */
+//todo strncpy()等函数，参数是volatile,产生warning
+//todo 操作手
+//todo 舵轮底盘
+
+/**
  * @brief 一些有用的常量，基本上是从 GCC 的 math.h 中复制下来的(因为 ARMCC 的库里貌似没有)
  *
  */
@@ -88,12 +96,14 @@
  * @brief 自定义端口 *
  */
 
-#define BeepPinGPIOx    GPIOD
-#define BeepPinGPIO_Pin GPIO_PIN_7
+#define BeepPinGPIOx           GPIOD
+#define BeepPinGPIO_Pin        GPIO_PIN_7
 
-#define huart_Computer huart4
-#define huart_Remote_Control huart5
+#define huart_Computer         huart4
+#define huart_Remote_Control   huart5
 #define huart_Chassis_to_Upper huart6
+#define huart_OPS              huart4
+#define huart_AS69             huart1
 
 // wtr_ads1256_config.h
 #define ADS1256_DRDY_GPIOx     GPIOA
@@ -110,7 +120,6 @@
 // wtr_time.h
 #define HAL_Tick_TIM  TIM7
 
-#define huart_OPS     huart4
 #define UART_Computer USART2
 #define UART_OPS      UART4
 #define UART_AS69     USART1

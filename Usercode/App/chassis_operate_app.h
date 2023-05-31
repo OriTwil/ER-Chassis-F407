@@ -12,5 +12,6 @@ void StateManagemantTaskStart();
 void StateInit();
 void PIDInit();
 void JoystickControl();
+void TestControl();
 
 #endif
