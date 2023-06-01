@@ -14,6 +14,7 @@
 #include "wtr_uart.h"
 #include "user_config.h"
 #include "chassis_remote_control.h"
+#include "chassis_machine.h"
 
 float w_speed      = 0;
 int16_t crldata[4] = {0};
@@ -63,19 +64,19 @@ void wtrMavlink_MsgRxCpltCallback(mavlink_message_t *msg)
  * @date:
  * @return {void}
  */
-extern uni_wheel_t wheels[3];
+
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
     switch (GPIO_Pin) {
         case Hall_Front_GPIN_PIN:
-            Wheel_Hall_Callback(GPIOE, GPIO_Pin, &wheels[0]);
+            Wheel_Hall_Callback(GPIOE, GPIO_Pin, &Wheel_component.wheels[0]);
             break;
         case Hall_Left_GPIN_PIN:
-            Wheel_Hall_Callback(GPIOE, GPIO_Pin, &wheels[1]);
+            Wheel_Hall_Callback(GPIOE, GPIO_Pin, &Wheel_component.wheels[1]);
             // UWheels_Hall_Callback(1);
             break;
         case Hall_Right_GPIN_PIN:
-            Wheel_Hall_Callback(GPIOE, GPIO_Pin, &wheels[2]);
+            Wheel_Hall_Callback(GPIOE, GPIO_Pin, &Wheel_component.wheels[2]);
             // UWheels_Hall_Callback(2);
             break;
         default:

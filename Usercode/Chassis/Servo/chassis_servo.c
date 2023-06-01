@@ -16,7 +16,7 @@ CHASSIS_PID Chassis_pid;
  */
 void ServoTask(void const *argument)
 {
-    uint32_t PreviousWakeTime = osKernelSysTick();
+    uint32_t PreviousWakeTime = xTaskGetTickCount();
     vTaskDelay(20);
     for (;;) {
         // 更新PID的目标值和反馈值
@@ -48,7 +48,7 @@ void ServoTask(void const *argument)
  */
 void ServoTestTask(void const *argument)
 {
-    uint32_t PreviousWakeTime = osKernelSysTick();
+    uint32_t PreviousWakeTime = xTaskGetTickCount();
     vTaskDelay(20);
     for (;;) {
         vTaskDelayUntil(&PreviousWakeTime, 3);

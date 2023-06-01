@@ -29,7 +29,6 @@ CHASSIS_COMPONENT Chassis_component;
 CHASSIS_CONTROL Chassis_control;
 CHASSIS_POSITION Chassis_position;
 
-uni_wheel_t wheels[3];
 double HallCorrectingStartPos[3];
 uint32_t HallCorrectingStartTick;
 double vx_deadbanded = 0;
@@ -211,7 +210,7 @@ void ChassisHallCorrect(float target_angle, WHEEL_COMPONENT *wheel_component) //
         if (difference[0] < 0.1 && difference[1] < 0.1 && difference[2] < 0.1) {
             isArrive = true;
         }
-        vTaskDelay(2);
+        vTaskDelay(3);
     } while (!isArrive);
 }
 
