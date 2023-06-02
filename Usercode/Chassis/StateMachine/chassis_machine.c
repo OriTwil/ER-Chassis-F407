@@ -38,10 +38,12 @@ GPIO_PinState state_gpio9  = GPIO_PIN_SET;
 GPIO_PinState state_gpio10 = GPIO_PIN_SET;
 GPIO_PinState state_gpio11 = GPIO_PIN_SET;
 
+
 void ChassisTask(void const *argument)
 {
 
     vTaskDelay(200);
+    // uint32_t PreviousWakeTime = xTaskGetTickCount();
 
     for (;;) {
         vPortEnterCritical();
@@ -49,6 +51,12 @@ void ChassisTask(void const *argument)
         mavlink_control_t control_temp     = control;
         vPortExitCritical(); // 拷贝
         CHASSIS_COMPONENT Chassis_component_temp = ReadChassisComnent(&Chassis_component);
+
+        for (int i = 0; i < 4; i++) {
+            HallCorrectingStartPos[i] = Wheel_component.wheels[i].now_rot_pos;
+        }
+        HallCorrectingStartTick = xTaskGetTickCount();
+
         switch (Chassis_component_temp.Chassis_State) {
             case Locked:
                 SetWheelsRef(Wheel_Front, 0, Wheel_Front_Locked_Pos, &Wheel_component);
@@ -56,7 +64,7 @@ void ChassisTask(void const *argument)
                 SetWheelsRef(Wheel_Right, 0, Wheel_Right_Locked_Pos, &Wheel_component);
                 break;
             case HallCorrecting:
-                ChassisHallCorrect(720, &Wheel_component);
+                ChassisHallCorrect((2 * M_PI), &Wheel_component);
                 break;
             case RemoteControl:
                 SetChassisPosition(mav_posture_temp.pos_x,
@@ -102,13 +110,14 @@ void ChassisTask(void const *argument)
             default:
                 break;
         }
+        // vTaskDelayUntil(&PreviousWakeTime,3);
         vTaskDelay(5);
     }
 }
 
 void ChassisTaskStart()
 {
-    osThreadDef(chassis, ChassisTask, osPriorityBelowNormal, 0, 1024);
+    osThreadDef(chassis, ChassisTask, osPriorityNormal, 0, 1024);
     osThreadCreate(osThread(chassis), NULL);
 }
 
@@ -136,7 +145,7 @@ void ChassisSwitchPoint(CHASSIS_POINT target_point, CHASSIS_COMPONENT *chassis_c
  * @param currentTime 当前角度
  * @todo 转换为国际单位制
  */
-void VelocityPlanning(float initialAngle, float maxAngularVelocity, float AngularAcceleration, float targetAngle, float currentTime, float *currentAngle)
+void VelocityPlanning(float initialAngle, float maxAngularVelocity, float AngularAcceleration, float targetAngle, float currentTime, volatile float *currentAngle)
 {
 
     float angleDifference = targetAngle - initialAngle;     // 计算到目标位置的角度差
@@ -198,13 +207,12 @@ void ChassisHallCorrect(float target_angle, WHEEL_COMPONENT *wheel_component) //
         TickType_t HallCorrectingNowTick     = xTaskGetTickCount();
         TickType_t HallCorrectingElapsedTick = HallCorrectingNowTick - HallCorrectingStartTick;
         float timeSec                        = (HallCorrectingElapsedTick / (1000.0)); // 获取当前时间/s
-        xSemaphoreTakeRecursive(wheel_component->xMutex_wheel, (TickType_t)10);
         // 速度规划
         for (int i = 0; i < 3; i++) {
             VelocityPlanning(HallCorrectingStartPos[i], HallCorrecting_Max_Velocity, HallCorrecting_Acceleration, target_angle, timeSec, &(currentAngle[i]));
             SetWheelsRef(i, 0, currentAngle[i], wheel_component);
+            difference[i] = fabs(currentAngle[i] - target_angle);
         }
-        xSemaphoreGiveRecursive(wheel_component->xMutex_wheel); //! 要换成递归互斥锁！！！
 
         // 判断是否到达目标位置
         if (difference[0] < 0.1 && difference[1] < 0.1 && difference[2] < 0.1) {
@@ -212,6 +220,8 @@ void ChassisHallCorrect(float target_angle, WHEEL_COMPONENT *wheel_component) //
         }
         vTaskDelay(3);
     } while (!isArrive);
+
+    ChassisSwitchState(RemoteControl, &Chassis_component);
 }
 
 CHASSIS_COMPONENT ReadChassisComnent(CHASSIS_COMPONENT *chassis_component)

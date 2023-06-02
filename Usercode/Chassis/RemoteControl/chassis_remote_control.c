@@ -6,10 +6,16 @@
 
 mavlink_joystick_air_t msg_joystick_air = {};
 JOYSTICK_SEND msg_joystick_send;
+char title[20] = "posture";
+char msg[20] = "start";
 
 void RemoteControlTask(void const *argument)
 {
     uint32_t PreviousWakeTime = xTaskGetTickCount();
+
+    JoystickSwitchLED(200, 200, 200, 0.1,1000,&msg_joystick_send);
+    JoystickSwitchTitle(150,title,&msg_joystick_send);
+    JoystickSwitchMsg(150,msg,&msg_joystick_send);
     while (1) {
         RemoteControlSendMsg(&msg_joystick_send);
         vTaskDelayUntil(&PreviousWakeTime, 100);
@@ -53,7 +59,7 @@ void JoystickSwitchLED(float r, float g, float b, float lightness, uint16_t dura
     mavlink_msg_joystick_air_led_send_struct(MAVLINK_COMM_1, &msg_joystick_send_temp.msg_joystick_air_led);
 }
 
-void JoystickSwitchTitle(uint8_t id, char title[20], JOYSTICK_SEND *msg_joystick_send)
+void JoystickSwitchTitle(uint8_t id, char* title, JOYSTICK_SEND *msg_joystick_send)
 {
     xSemaphoreTakeRecursive(msg_joystick_send->xMutex_joystick, portMAX_DELAY);
     msg_joystick_send->msg_joystick_air_dashboard_set_title.id = id;
@@ -64,7 +70,7 @@ void JoystickSwitchTitle(uint8_t id, char title[20], JOYSTICK_SEND *msg_joystick
     mavlink_msg_joystick_air_dashboard_set_title_send_struct(MAVLINK_COMM_1, &msg_joystick_send_temp.msg_joystick_air_dashboard_set_title);
 }
 
-void JoystickSwitchMsg(uint8_t id, char message[20], JOYSTICK_SEND *msg_joystick_send)
+void JoystickSwitchMsg(uint8_t id, char *message, JOYSTICK_SEND *msg_joystick_send)
 {
     xSemaphoreTakeRecursive(msg_joystick_send->xMutex_joystick, portMAX_DELAY);
     msg_joystick_send->msg_joystick_air_dashboard_set_msg.id = id;

@@ -33,6 +33,10 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
     if (huart->Instance == UART_AS69) {
         AS69_Decode(); // AS69解码
     }
+bb    if(huart->Instance == UART_Remote_Control)
+    {
+        wtrMavlink_UARTRxCpltCallback(huart, MAVLINK_COMM_1); // 进入mavlink回调
+    }
 }
 
 /**

@@ -12,9 +12,9 @@
  * @todo 还需要做什么?!
  *
  */
-//todo strncpy()等函数，参数是volatile,产生warning
-//todo 操作手
-//todo 舵轮底盘
+// todo strncpy()等函数，参数是volatile,产生warning
+// todo 操作手
+// todo 舵轮底盘
 
 /**
  * @brief 一些有用的常量，基本上是从 GCC 的 math.h 中复制下来的(因为 ARMCC 的库里貌似没有)
@@ -78,12 +78,12 @@
 #define Wheel_Left_Locked_Pos       0
 #define Wheel_Right_Locked_Pos      0
 
-#define HallCorrecting_Max_Velocity 30.0
-#define HallCorrecting_Acceleration 300.0
+#define HallCorrecting_Max_Velocity 1.0472 // 60°
+#define HallCorrecting_Acceleration 10.472
 
-#define Hall_Front_GPIN_PIN         GPIO_PIN_12
-#define Hall_Left_GPIN_PIN          GPIO_PIN_15
-#define Hall_Right_GPIN_PIN         GPIO_PIN_13
+#define Hall_Front_GPIN_PIN         GPIO_PIN_13
+#define Hall_Left_GPIN_PIN          GPIO_PIN_14
+#define Hall_Right_GPIN_PIN         GPIO_PIN_12
 
 //* 舵轮初始化数据在chassis_driver.c中的Chassis_Init()
 
@@ -100,8 +100,8 @@
 #define BeepPinGPIO_Pin        GPIO_PIN_7
 
 #define huart_Computer         huart4
-#define huart_Remote_Control   huart5
-#define huart_Chassis_to_Upper huart6
+#define huart_Remote_Control   huart6
+#define huart_Chassis_to_Upper huart3
 #define huart_OPS              huart4
 #define huart_AS69             huart1
 
@@ -118,11 +118,12 @@
 #define ADS1256_Reset_GPIO_Pin GPIO_PIN_2
 
 // wtr_time.h
-#define HAL_Tick_TIM  TIM7
+#define HAL_Tick_TIM        TIM7
 
-#define UART_Computer USART2
-#define UART_OPS      UART4
-#define UART_AS69     USART1
+#define UART_Computer       USART2
+#define UART_OPS            UART4
+#define UART_AS69           USART1
+#define UART_Remote_Control USART6
 
 /**
  * @brief 一些固定参数

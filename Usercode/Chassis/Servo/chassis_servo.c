@@ -62,7 +62,7 @@ void ServoTestTask(void const *argument)
  */
 void ServoTaskStart()
 {
-    osThreadDef(servo, ServoTask, osPriorityBelowNormal, 0, 512);
+    osThreadDef(servo, ServoTask, osPriorityAboveNormal, 0, 1024);
     osThreadCreate(osThread(servo), NULL);
 
     // osThreadDef(servo_test,ServoTestTask,osPriorityBelowNormal,0,512);
@@ -73,13 +73,13 @@ void ServoTaskStart()
 void MotorInit()
 {
     CANFilterInit(&hcan1);
-    hDJI[0].motorType = M2006; // 前
-    hDJI[1].motorType = M2006; // 左
-    hDJI[2].motorType = M2006; // 有
-    hDJI[3].motorType = M2006; // claw
-    hDJI[4].motorType = M2006; // 翻转
-    hDJI[5].motorType = M3508; // 伸缩
-    hDJI[6].motorType = M3508;
+    hDJI[0].motorType = M2006; // 
+    hDJI[1].motorType = M2006; // 
+    hDJI[2].motorType = M2006; // 
+    hDJI[3].motorType = M2006; // 
+    hDJI[4].motorType = M2006; // 
+    hDJI[5].motorType = M2006; // 
+    hDJI[6].motorType = M2006;
     DJI_Init(); // 大疆电机初始化
 }
 
@@ -170,9 +170,8 @@ void CalculateWheels(CHASSIS_CONTROL *chassis_control, WHEEL_COMPONENT *wheel_co
 void ServoWheels(WHEEL_COMPONENT *wheel_component)
 {
     xSemaphoreTakeRecursive(wheel_component->xMutex_wheel, (TickType_t)10);
-    WHEEL_COMPONENT wheel_component_temp = *wheel_component;
+    Wheels_CalcTransmit(wheel_component->wheels, 3);
     xSemaphoreGiveRecursive(wheel_component->xMutex_wheel);
-    Wheels_CalcTransmit(wheel_component_temp.wheels, 3);
 }
 
 void SetWheelsRef(int wheel_id, double target_speed, double target_pos, WHEEL_COMPONENT *wheel_component)

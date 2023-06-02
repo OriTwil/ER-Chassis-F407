@@ -18,8 +18,9 @@
 void StateManagemantTask(void const *argument)
 {
     vTaskDelay(20);
+    ChassisSwitchState(HallCorrecting, &Chassis_component);
     for (;;) {
-        JoystickControl();
+        // JoystickControl();
         vTaskDelay(10);
     }
 }
@@ -31,7 +32,7 @@ void StateManagemantTask(void const *argument)
 void StateManagemantTaskStart()
 {
 
-    osThreadDef(statemanagement, StateManagemantTask, osPriorityBelowNormal, 0, 512);
+    osThreadDef(statemanagement, StateManagemantTask, osPriorityNormal, 0, 512);
     osThreadCreate(osThread(statemanagement), NULL);
 }
 
@@ -185,7 +186,7 @@ void JoystickControl()
     }
 }
 
-// 
+//
 void Test_Navigation()
 {
     /*测试按钮导航*/
@@ -193,34 +194,34 @@ void Test_Navigation()
 
     if (ReadJoystickButtons(msg_joystick_air, Btn_LeftCrossLeft)) {
         // Code for Btn_LeftCrossLeft
-        ChassisSwitchPoint(First_Point,&Chassis_component);
+        ChassisSwitchPoint(First_Point, &Chassis_component);
     }
 
     if (ReadJoystickButtons(msg_joystick_air, Btn_LeftCrossRight)) {
         // Code for Btn_LeftCrossRight
-        ChassisSwitchPoint(Second_Point,&Chassis_component);
+        ChassisSwitchPoint(Second_Point, &Chassis_component);
     }
 
     if (ReadJoystickButtons(msg_joystick_air, Btn_LeftCrossMid)) {
         // Code for Btn_LeftCrossMid
-        ChassisSwitchPoint(Third_Point,&Chassis_component);
+        ChassisSwitchPoint(Third_Point, &Chassis_component);
     }
 
     if (ReadJoystickButtons(msg_joystick_air, Btn_RightCrossUp)) {
         // Code for Btn_RightCrossUp
-        ChassisSwitchPoint(Fourth_Point,&Chassis_component);
+        ChassisSwitchPoint(Fourth_Point, &Chassis_component);
     }
 
     if (ReadJoystickButtons(msg_joystick_air, Btn_RightCrossDown)) {
         // Code for Btn_RightCrossDown
-        ChassisSwitchPoint(Fifth_Point,&Chassis_component);
+        ChassisSwitchPoint(Fifth_Point, &Chassis_component);
     }
 }
 
 void Test_RemoteControl()
 {
     /*遥控器摇杆控制*/
-    ChassisSwitchState(RemoteControl,&Chassis_component);
+    ChassisSwitchState(RemoteControl, &Chassis_component);
 }
 
 // todo 码盘坐标系转换函数、底盘坐标系转换函数
