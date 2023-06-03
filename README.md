@@ -31,7 +31,7 @@ ER robot chassis for ROBOCON 2023, ported to STM32F407 MCU.
 - Remote control: `AS69`.
 - `Wireless debugger`: can be used as a wireless serial port and for wireless burning, debugging.
 
-## EIDE 工程说明
+## EIDE 工程说明(Fork from TITH)
 
 ### 目录结构
 
