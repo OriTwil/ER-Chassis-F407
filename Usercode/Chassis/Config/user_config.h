@@ -22,7 +22,7 @@
  */
 
 #pragma once
-
+#include "usart.h"
 /* Natural log of 2 */
 #define _M_LN2   0.693147180559945309417
 
@@ -102,7 +102,7 @@
 #define huart_Computer         huart4
 #define huart_Remote_Control   huart6
 #define huart_Chassis_to_Upper huart3
-#define huart_OPS              huart4
+#define huart_OPS              huart2
 #define huart_AS69             huart1
 
 // wtr_ads1256_config.h
@@ -120,8 +120,8 @@
 // wtr_time.h
 #define HAL_Tick_TIM        TIM7
 
-#define UART_Computer       USART2
-#define UART_OPS            UART4
+#define UART_Computer       USART3
+#define UART_OPS            USART2
 #define UART_AS69           USART1
 #define UART_Remote_Control USART6
 

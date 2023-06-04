@@ -15,6 +15,7 @@
 #include "wtr_uart.h"
 #include "chassis_machine.h"
 #include "chassis_commen.h"
+#include "chassis_remote_control.h"
 
 // 变量定义
 mavlink_posture_t mav_posture;
@@ -35,10 +36,12 @@ void CommunicateTask(void const *argument)
         vPortEnterCritical();
         mavlink_posture_t mav_posture_temp           = mav_posture;
         mavlink_chassis_to_upper_t chassis_data_temp = chassis_data;
+        mavlink_joystick_air_t msg_joystick_air_temp = msg_joystick_air;
         vPortExitCritical();
 
         mavlink_msg_posture_send_struct(MAVLINK_COMM_0, &mav_posture_temp);
         mavlink_msg_chassis_to_upper_send_struct(MAVLINK_COMM_2, &chassis_data_temp);
+        mavlink_msg_joystick_air_send_struct(MAVLINK_COMM_2,&msg_joystick_air_temp);
         vTaskDelay(10);
     }
 }
