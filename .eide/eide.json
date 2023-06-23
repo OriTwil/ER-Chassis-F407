@@ -39,17 +39,13 @@
         },
         "options": "null"
       },
-      "uploader": "JLink",
+      "uploader": "pyOCD",
       "uploadConfig": {
         "bin": "",
-        "baseAddr": "",
-        "cpuInfo": {
-          "vendor": "ST",
-          "cpuName": "STM32F407VE"
-        },
-        "proType": 1,
-        "speed": 8000,
-        "otherCmds": ""
+        "targetName": "stm32f407vetx",
+        "baseAddr": "0x08000000",
+        "speed": "4M",
+        "config": ".eide/debug.pyocd.yaml"
       },
       "uploadConfigMap": {
         "JLink": {

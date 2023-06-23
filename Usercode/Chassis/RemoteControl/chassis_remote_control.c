@@ -8,6 +8,7 @@ mavlink_joystick_air_t msg_joystick_air = {};
 JOYSTICK_SEND msg_joystick_send;
 char title[20] = "posture";
 char msg[20] = "start";
+bool button_;
 
 void RemoteControlTask(void const *argument)
 {
@@ -18,6 +19,7 @@ void RemoteControlTask(void const *argument)
     JoystickSwitchMsg(150,msg,&msg_joystick_send);
     while (1) {
         RemoteControlSendMsg(&msg_joystick_send);
+        button_ = ReadJoystickButtons(msg_joystick_air,Btn_LeftCrossDown);
         vTaskDelayUntil(&PreviousWakeTime, 100);
     }
 }

@@ -18,9 +18,9 @@
 void StateManagemantTask(void const *argument)
 {
     vTaskDelay(20);
-    ChassisSwitchState(HallCorrecting, &Chassis_component);
+    // ChassisSwitchState(HallCorrecting, &Chassis_component);
     for (;;) {
-        // JoystickControl();
+        JoystickControl();
         vTaskDelay(10);
     }
 }
@@ -40,7 +40,7 @@ void StateManagemantTaskStart()
 void StateInit()
 {
     Chassis_component.Chassis_Point  = First_Ring;
-    Chassis_component.Chassis_State  = Ready;
+    Chassis_component.Chassis_State  = Locked;
     Chassis_component.xMutex_chassis = xSemaphoreCreateRecursiveMutex();
 
     Perception_component.Perception_State  = Receive;
@@ -80,109 +80,61 @@ void StateInit()
 void PIDInit()
 {
     // 位置式pid参数设置
-    Chassis_pid.Pid_pos_w.Kp    = 40;
+    Chassis_pid.Pid_pos_w.Kp    = 0.7;
     Chassis_pid.Pid_pos_w.Ki    = 0;
     Chassis_pid.Pid_pos_w.Kd    = 0;
-    Chassis_pid.Pid_pos_w.limit = 0.5;
+    Chassis_pid.Pid_pos_w.limit = 0.3;
 
-    Chassis_pid.Pid_pos_x.Kp    = 5;
+    Chassis_pid.Pid_pos_x.Kp    = 4.5;
     Chassis_pid.Pid_pos_x.Ki    = 0;
     Chassis_pid.Pid_pos_x.Kd    = 0;
-    Chassis_pid.Pid_pos_x.limit = 0.5;
+    Chassis_pid.Pid_pos_x.limit = 0.3;
 
-    Chassis_pid.Pid_pos_y.Kp    = 5;
+    Chassis_pid.Pid_pos_y.Kp    = 4.5;
     Chassis_pid.Pid_pos_y.Ki    = 0;
     Chassis_pid.Pid_pos_y.Kd    = 0;
-    Chassis_pid.Pid_pos_y.limit = 0.5;
+    Chassis_pid.Pid_pos_y.limit = 0.3;
 }
 
 void JoystickControl()
 {
     /*设计操作手的操作*/
-    if (ReadJoystickSwitchs(msg_joystick_air, Left_switch)) {
+    if (ReadJoystickSwitchs(msg_joystick_air, Left_switch) == 1) {
         // Code for Left_switch
+        if (ReadJoystickButtons(msg_joystick_air, Btn_Btn2)) {
+            ChassisSwitchState(RemoteControl, &Chassis_component);
+        }
+        if (ReadJoystickButtons(msg_joystick_air, Btn_Btn3)) {
+            ChassisSwitchState(ComputerControl, &Chassis_component);
+        }
+        if (ReadJoystickButtons(msg_joystick_air, Btn_Btn4)) {
+            ChassisSwitchState(HallCorrecting, &Chassis_component);
+        }
     }
-    if (ReadJoystickSwitchs(msg_joystick_air, Right_switch)) {
-        // Code for Right_switch
-    }
-    if (ReadJoystickButtons(msg_joystick_air, Btn_LeftCrossDown)) {
-        // Code for Btn_LeftCrossDown
-    }
-
-    if (ReadJoystickButtons(msg_joystick_air, Btn_LeftCrossUp)) {
-        // Code for Btn_LeftCrossUp
-    }
-
-    if (ReadJoystickButtons(msg_joystick_air, Btn_LeftCrossLeft)) {
-        // Code for Btn_LeftCrossLeft
-    }
-
-    if (ReadJoystickButtons(msg_joystick_air, Btn_LeftCrossRight)) {
-        // Code for Btn_LeftCrossRight
-    }
-
-    if (ReadJoystickButtons(msg_joystick_air, Btn_LeftCrossMid)) {
-        // Code for Btn_LeftCrossMid
-    }
-
-    if (ReadJoystickButtons(msg_joystick_air, Btn_RightCrossUp)) {
-        // Code for Btn_RightCrossUp
-    }
-
-    if (ReadJoystickButtons(msg_joystick_air, Btn_RightCrossDown)) {
-        // Code for Btn_RightCrossDown
-    }
-
-    if (ReadJoystickButtons(msg_joystick_air, Btn_RightCrossLeft)) {
-        // Code for Btn_RightCrossLeft
-    }
-
-    if (ReadJoystickButtons(msg_joystick_air, Btn_RightCrossRight)) {
-        // Code for Btn_RightCrossRight
-    }
-
-    if (ReadJoystickButtons(msg_joystick_air, Btn_RightCrossMid)) {
-        // Code for Btn_RightCrossMid
-    }
-
-    if (ReadJoystickButtons(msg_joystick_air, Btn_Btn0)) {
-        // Code for Btn_Btn0
-    }
-
-    if (ReadJoystickButtons(msg_joystick_air, Btn_Btn1)) {
-        // Code for Btn_Btn1
-    }
-
-    if (ReadJoystickButtons(msg_joystick_air, Btn_Btn2)) {
-        // Code for Btn_Btn2
-    }
-
-    if (ReadJoystickButtons(msg_joystick_air, Btn_Btn3)) {
-        // Code for Btn_Btn3
-    }
-
-    if (ReadJoystickButtons(msg_joystick_air, Btn_Btn4)) {
-        // Code for Btn_Btn4
-    }
-
-    if (ReadJoystickButtons(msg_joystick_air, Btn_Btn5)) {
-        // Code for Btn_Btn5
-    }
-
-    if (ReadJoystickButtons(msg_joystick_air, Btn_KnobL)) {
-        // Code for Btn_KnobL
-    }
-
-    if (ReadJoystickButtons(msg_joystick_air, Btn_KnobR)) {
-        // Code for Btn_KnobR
+    
+    if (ReadJoystickSwitchs(msg_joystick_air, Left_switch) == 0) {
+        ChassisSwitchState(Locked, &Chassis_component);
     }
 
     if (ReadJoystickButtons(msg_joystick_air, Btn_JoystickL)) {
-        // Code for Btn_JoystickL
+        vPortEnterCritical();
+        mav_posture.point = First_Point;
+        vPortExitCritical();
     }
-
     if (ReadJoystickButtons(msg_joystick_air, Btn_JoystickR)) {
-        // Code for Btn_JoystickR
+        vPortEnterCritical();
+        mav_posture.point = Second_Point;
+        vPortExitCritical();
+    }
+    if (ReadJoystickButtons(msg_joystick_air, Btn_KnobL)) {
+        vPortEnterCritical();
+        mav_posture.point = Third_Point;
+        vPortExitCritical();
+    }
+    if (ReadJoystickButtons(msg_joystick_air, Btn_KnobR)) {
+        vPortEnterCritical();
+        mav_posture.point = Fourth_Point;
+        vPortExitCritical();
     }
 }
 

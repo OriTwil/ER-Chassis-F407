@@ -19,6 +19,10 @@
 
 void Chassis_Init(uni_wheel_t *wheel);
 
+double LoopSimplify(double cycle, double value);
+
+void Wheel_ReadNowRotPos(uni_wheel_t *wheel);
+
 void Wheel_Set(uni_wheel_t *wheel, double speed, double rot_pos);
 
 void Wheel_SetXY(uni_wheel_t *wheel, double speed_x, double speed_y);

@@ -184,9 +184,9 @@ void Chassis_Init(uni_wheel_t *wheel)
     wheel[2].hvesc.hcann         = &hcan1;
     wheel[2].hvesc.controller_id = 0x00;
 
-    wheel[0].hall_angle = (-45.0) / 180 * M_PI;
+    wheel[0].hall_angle = (135.0) / 180 * M_PI;
     wheel[1].hall_angle = (-45.0) / 180 * M_PI;
-    wheel[2].hall_angle = 45.0 / 180 * M_PI; //? 还不知道安装 情况
+    wheel[2].hall_angle = (-135.0) / 180 * M_PI; //? 还不知道安装 情况
 
     for (int i = 0; i < 3; i++) {
         wheel[i].rot_pos_ratio  = 171.887338539247;

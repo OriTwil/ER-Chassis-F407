@@ -78,12 +78,12 @@
 #define Wheel_Left_Locked_Pos       0
 #define Wheel_Right_Locked_Pos      0
 
-#define HallCorrecting_Max_Velocity 1.0472 // 60°
-#define HallCorrecting_Acceleration 10.472
+#define HallCorrecting_Max_Velocity 3
+#define HallCorrecting_Acceleration 30
 
-#define Hall_Front_GPIN_PIN         GPIO_PIN_13
-#define Hall_Left_GPIN_PIN          GPIO_PIN_14
-#define Hall_Right_GPIN_PIN         GPIO_PIN_12
+#define Hall_Front_GPIN_PIN         GPIO_PIN_14
+#define Hall_Left_GPIN_PIN          GPIO_PIN_12
+#define Hall_Right_GPIN_PIN         GPIO_PIN_13
 
 //* 舵轮初始化数据在chassis_driver.c中的Chassis_Init()
 
@@ -99,10 +99,10 @@
 #define BeepPinGPIOx           GPIOD
 #define BeepPinGPIO_Pin        GPIO_PIN_7
 
-#define huart_Computer         huart4
+#define huart_Computer         huart2
 #define huart_Remote_Control   huart6
 #define huart_Chassis_to_Upper huart3
-#define huart_OPS              huart2
+#define huart_OPS              huart4
 #define huart_AS69             huart1
 
 // wtr_ads1256_config.h
@@ -121,9 +121,10 @@
 #define HAL_Tick_TIM        TIM7
 
 #define UART_Computer       USART3
-#define UART_OPS            USART2
+#define UART_OPS            UART4
 #define UART_AS69           USART1
 #define UART_Remote_Control USART6
+#define UART_Chassis_to_Upper USART3
 
 /**
  * @brief 一些固定参数

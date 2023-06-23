@@ -23,6 +23,7 @@
 #include "chassis_remote_control.h"
 
 #define rx_DEADBAND 100.0
+// #define DJI_CONTROL
 
 WHEEL_COMPONENT Wheel_component;
 CHASSIS_COMPONENT Chassis_component;
@@ -33,11 +34,11 @@ double HallCorrectingStartPos[3];
 uint32_t HallCorrectingStartTick;
 double vx_deadbanded = 0;
 double vy_deadbanded = 0;
+double vw_deadbanded = 0;
 
 GPIO_PinState state_gpio9  = GPIO_PIN_SET;
 GPIO_PinState state_gpio10 = GPIO_PIN_SET;
 GPIO_PinState state_gpio11 = GPIO_PIN_SET;
-
 
 void ChassisTask(void const *argument)
 {
@@ -59,38 +60,41 @@ void ChassisTask(void const *argument)
 
         switch (Chassis_component_temp.Chassis_State) {
             case Locked:
-                SetWheelsRef(Wheel_Front, 0, Wheel_Front_Locked_Pos, &Wheel_component);
-                SetWheelsRef(Wheel_Left, 0, Wheel_Left_Locked_Pos, &Wheel_component);
-                SetWheelsRef(Wheel_Right, 0, Wheel_Right_Locked_Pos, &Wheel_component);
+                ChassisLocked();
                 break;
             case HallCorrecting:
-                ChassisHallCorrect((2 * M_PI), &Wheel_component);
+                ChassisHallCorrect();
                 break;
             case RemoteControl:
                 SetChassisPosition(mav_posture_temp.pos_x,
                                    mav_posture_temp.pos_y,
                                    mav_posture_temp.zangle,
                                    &Chassis_position); // 更新底盘位置
-
-                // DJI_Control();
+#ifdef DJI_CONTROL
+                DJI_Control();
+#else
                 Joystick_Control();
+#endif
                 vPortEnterCritical();
                 DeadBand((double)crl_speed.vx,
                          (double)crl_speed.vy,
                          &vx_deadbanded,
                          &vy_deadbanded,
-                         0.1); // 死区控制 DJI遥控器摇杆
+                         0.15); // 死区控制 DJI遥控器摇杆
+                DeadBandOneDimensional((double)crl_speed.vw, &vw_deadbanded, 0.1);
+                vPortExitCritical();
+
                 SetChassisControlPosition(Chassis_position.Chassis_Position_x,
                                           Chassis_position.Chassis_Position_y,
                                           Chassis_position.Chassis_Position_w,
                                           &Chassis_control); // 没什么用，反正这个状态用不到PID
                 SetChassisControlVelocity(vx_deadbanded,
                                           vy_deadbanded,
-                                          crl_speed.vw,
+                                          vw_deadbanded,
                                           &Chassis_control);
-                vPortExitCritical();
                 CalculateWheels(&Chassis_control, &Wheel_component); // 用摇杆控制底盘
                 break;
+
             case ComputerControl:
 
                 SetChassisPosition(mav_posture_temp.pos_x,
@@ -101,6 +105,14 @@ void ChassisTask(void const *argument)
                                           control_temp.y_set,
                                           control_temp.w_set,
                                           &Chassis_control); // 上位机规划值作为伺服值
+
+                xSemaphoreTake(Chassis_pid.xMutex_pid, portMAX_DELAY);
+                control_temp.vx_set = control_temp.vx_set + PIDPosition(&Chassis_pid.Pid_pos_x);
+                control_temp.vy_set = control_temp.vy_set + PIDPosition(&Chassis_pid.Pid_pos_y);
+                control_temp.vw_set = PIDPosition(&Chassis_pid.Pid_pos_w);
+                xSemaphoreGive(Chassis_pid.xMutex_pid);
+                control_temp = FrameTransform(&control_temp, &mav_posture);
+
                 SetChassisControlVelocity(control_temp.vx_set,
                                           control_temp.vy_set,
                                           control_temp.vw_set,
@@ -110,7 +122,6 @@ void ChassisTask(void const *argument)
             default:
                 break;
         }
-        // vTaskDelayUntil(&PreviousWakeTime,3);
         vTaskDelay(5);
     }
 }
@@ -192,15 +203,21 @@ void VelocityPlanning(float initialAngle, float maxAngularVelocity, float Angula
     }
 }
 
-void ChassisHallCorrect(float target_angle, WHEEL_COMPONENT *wheel_component) //! 要考虑形参volatile
+void ChassisHallCorrect() //! 要考虑形参volatile
 {
 
     float HallCorrectingStartPos[3] = {0};
-    float difference[3]             = {0};
+    float targetAngle[3]            = {0};
     float currentAngle[3]           = {0};
+    float difference[3]             = {0};
     for (int i = 0; i < 3; i++) {
-        HallCorrectingStartPos[i] = wheel_component->wheels[i].now_rot_pos;
+        HallCorrectingStartPos[i] = Wheel_component.wheels[i].now_rot_pos;
     }
+
+    targetAngle[0] = HallCorrectingStartPos[0] - 2 * 1.1 * M_PI;
+    targetAngle[1] = HallCorrectingStartPos[1] + 2 * 1.1 * M_PI;
+    targetAngle[2] = HallCorrectingStartPos[2] + 2 * 1.1 * M_PI;
+
     bool isArrive                      = false;               // 标志是否达到目标位置
     TickType_t HallCorrectingStartTick = xTaskGetTickCount(); // 初始时间
     do {
@@ -209,19 +226,43 @@ void ChassisHallCorrect(float target_angle, WHEEL_COMPONENT *wheel_component) //
         float timeSec                        = (HallCorrectingElapsedTick / (1000.0)); // 获取当前时间/s
         // 速度规划
         for (int i = 0; i < 3; i++) {
-            VelocityPlanning(HallCorrectingStartPos[i], HallCorrecting_Max_Velocity, HallCorrecting_Acceleration, target_angle, timeSec, &(currentAngle[i]));
-            SetWheelsRef(i, 0, currentAngle[i], wheel_component);
-            difference[i] = fabs(currentAngle[i] - target_angle);
+            VelocityPlanning(HallCorrectingStartPos[i], HallCorrecting_Max_Velocity, HallCorrecting_Acceleration, targetAngle[i], timeSec, &(currentAngle[i]));
+            SetWheelsRef(i, 0, currentAngle[i], &Wheel_component);
+            difference[i] = fabs(currentAngle[i] - targetAngle[i]);
         }
 
         // 判断是否到达目标位置
-        if (difference[0] < 0.1 && difference[1] < 0.1 && difference[2] < 0.1) {
+        if (difference[0] < 1 && difference[1] < 1 && difference[2] < 1) {
             isArrive = true;
         }
         vTaskDelay(3);
     } while (!isArrive);
 
-    ChassisSwitchState(RemoteControl, &Chassis_component);
+    ChassisSwitchState(Locked, &Chassis_component);
+}
+
+void ChassisLocked()
+{
+    double delta_pos[3];
+    for (int i = 0; i < 3; i++) {
+        Wheel_ReadNowRotPos(&(Wheel_component.wheels[i]));
+    }
+
+    delta_pos[0] = LoopSimplify(2 * M_PI, 0 - Wheel_component.wheels[0].now_rot_pos);
+    delta_pos[1] = LoopSimplify(2 * M_PI, 0 - Wheel_component.wheels[1].now_rot_pos);
+    delta_pos[2] = LoopSimplify(2 * M_PI, 0 - Wheel_component.wheels[2].now_rot_pos);
+
+    for (int i = 0; i < 3; i++) {
+        if (delta_pos[i] > M_PI / 2) {
+            delta_pos[i] -= M_PI;
+        } else if (delta_pos[i] < -M_PI / 2) {
+            delta_pos[i] += M_PI;
+        }
+    }
+
+    SetWheelsRef(Wheel_Front, 0, Wheel_component.wheels[0].now_rot_pos + delta_pos[0], &Wheel_component);
+    SetWheelsRef(Wheel_Left, 0, Wheel_component.wheels[1].now_rot_pos + delta_pos[1], &Wheel_component);
+    SetWheelsRef(Wheel_Right, 0, Wheel_component.wheels[2].now_rot_pos + delta_pos[2], &Wheel_component);
 }
 
 CHASSIS_COMPONENT ReadChassisComnent(CHASSIS_COMPONENT *chassis_component)

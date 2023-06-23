@@ -127,12 +127,12 @@ void OPS_Decode()
         case 4:
 
             if (ch[0] == 0x0d) {
-                mav_posture.zangle = posture.ActVal[0] * 0.001;
+                mav_posture.zangle = posture.ActVal[0];
                 mav_posture.xangle = posture.ActVal[1] * 0.001;
                 // mav_posture.xangle = control.x_set;
                 mav_posture.yangle = posture.ActVal[2] * 0.001;
-                mav_posture.pos_x  = posture.ActVal[3] * 0.001;
-                mav_posture.pos_y  = posture.ActVal[4] * 0.001;
+                mav_posture.pos_x  = - posture.ActVal[3] * 0.001;
+                mav_posture.pos_y  = - posture.ActVal[4] * 0.001;
                 mav_posture.w_z    = posture.ActVal[5] * 0.001;
                 // mav_posture.w_z = control.vx_set;
             }

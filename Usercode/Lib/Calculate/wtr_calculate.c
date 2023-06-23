@@ -14,7 +14,7 @@
 
 double moter_speed[4];
 // RR麦轮底盘
-#define rotate_ratio 0.3615 // (Width + Length)/2
+#define rotate_ratio    0.3615   // (Width + Length)/2
 #define wheel_rpm_ratio 2387.324 // 换算线速度到rpm
 
 /**
@@ -24,9 +24,9 @@ double moter_speed[4];
  * @return {void}
  */
 void CalculateThreeWheels(double *moter_speed,
-                 double v_x,
-                 double v_y,
-                 double v_w)
+                          double v_x,
+                          double v_y,
+                          double v_w)
 {
     moter_speed[0] = (-v_x * sin(30 * DEC) - v_y * cos(30 * DEC) + v_w * r_underpan_3) / (2 * M_PI * r_wheel);
     moter_speed[1] = (+v_x + v_w * r_underpan_3) / (2 * M_PI * r_wheel);
@@ -40,9 +40,9 @@ void CalculateThreeWheels(double *moter_speed,
  * @return {void}
  */
 void CalculateThreeWheels_(double *moter_speed,
-                   double v_x,
-                   double v_y,
-                   double v_w)
+                           double v_x,
+                           double v_y,
+                           double v_w)
 {
     moter_speed[2] = (-v_y * sin(30 * DEC) + v_x * cos(30 * DEC) + v_w * r_underpan_3) * 60 / (2 * M_PI * r_wheel) * 19;
     moter_speed[1] = (+v_y + v_w * r_underpan_3) * 60 / (2 * M_PI * r_wheel) * 19;
@@ -56,9 +56,9 @@ void CalculateThreeWheels_(double *moter_speed,
  * @return {void}
  */
 void CalculateFourWheels(double *moter_speed,
-                 double v_x,
-                 double v_y,
-                 double v_w)
+                         double v_x,
+                         double v_y,
+                         double v_w)
 {
     moter_speed[0] = (v_y + v_w * r_underpan_4) / (2 * M_PI * r_wheel);
     moter_speed[1] = (-v_x + v_w * r_underpan_4) / (2 * M_PI * r_wheel);
@@ -73,9 +73,9 @@ void CalculateFourWheels(double *moter_speed,
  * @return {void}
  */
 void CalculateFourWheels_(double *moter_speed,
-                   double vx,
-                   double vy,
-                   double vw)
+                          double vx,
+                          double vy,
+                          double vw)
 {
     moter_speed[0] = (vx * sqrt(2) + vy * sqrt(2) + vw * r_underpan_4) / (2 * M_PI * r_wheel);
     moter_speed[1] = (-vx * sqrt(2) + vy * sqrt(2) + vw * r_underpan_4) / (2 * M_PI * r_wheel);
@@ -89,7 +89,7 @@ void CalculateFourWheels_(double *moter_speed,
  * @date:
  * @return {void}
  */
-void CalculateFourMecanumWheels(double *moter_speed,double vx,double vy,double vw)
+void CalculateFourMecanumWheels(double *moter_speed, double vx, double vy, double vw)
 {
     moter_speed[0] = (vx - vy - vw * rotate_ratio) * wheel_rpm_ratio;
     moter_speed[1] = (vx + vy - vw * rotate_ratio) * wheel_rpm_ratio;
@@ -162,63 +162,50 @@ float PIDPosition(PID_Pos *p)
     return out;
 }
 
-/**
- * @description: 速度方向转换
- * @param 
- * @return 
- * @bug 转换方程还不确定
- */
-mavlink_control_t FrameTransform(mavlink_control_t *control,mavlink_posture_t *posture)
+// 增量式PID算法
+void PID_Calc(PID_t *pid)
 {
-    mavlink_control_t result;
-    result.vx_set = control->vx_set * cos(posture->zangle) + control->vy_set * sin(posture->zangle);
-    result.vy_set = -control->vx_set * sin(posture->zangle) + control->vy_set * cos(posture->zangle);
-    return result;
+    pid->cur_error = pid->ref - pid->fdb;
+    pid->output += pid->KP * (pid->cur_error - pid->error[1]) + pid->KI * pid->cur_error + pid->KD * (pid->cur_error - 2 * pid->error[1] + pid->error[0]);
+    pid->error[0] = pid->error[1];
+    pid->error[1] = pid->ref - pid->fdb;
+    /*设定输出上限*/
+    if (pid->output > pid->outputMax) pid->output = pid->outputMax;
+    if (pid->output < -pid->outputMax) pid->output = -pid->outputMax;
 }
 
-//增量式PID算法
-void PID_Calc(PID_t *pid){
-	pid->cur_error = pid->ref - pid->fdb;
-	pid->output += pid->KP * (pid->cur_error - pid->error[1]) + pid->KI * pid->cur_error + pid->KD * (pid->cur_error - 2 * pid->error[1] + pid->error[0]);
-	pid->error[0] = pid->error[1];
-	pid->error[1] = pid->ref - pid->fdb;
-	/*设定输出上限*/
-	if(pid->output > pid->outputMax) pid->output = pid->outputMax;
-	if(pid->output < -pid->outputMax) pid->output = -pid->outputMax;
+// 比例算法
+void P_Calc(PID_t *pid)
+{
+    pid->cur_error = pid->ref - pid->fdb;
+    pid->output    = pid->KP * pid->cur_error;
+    /*设定输出上限*/
+    if (pid->output > pid->outputMax) pid->output = pid->outputMax;
+    if (pid->output < -pid->outputMax) pid->output = -pid->outputMax;
 
+    if (fabs(pid->output) < pid->outputMin)
+        pid->output = 0;
 }
 
-//比例算法
-void P_Calc(PID_t *pid){
-	pid->cur_error = pid->ref - pid->fdb;
-	pid->output = pid->KP * pid->cur_error;
-	/*设定输出上限*/
-	if(pid->output > pid->outputMax) pid->output = pid->outputMax;
-	if(pid->output < -pid->outputMax) pid->output = -pid->outputMax;
-	
-	if(fabs(pid->output)<pid->outputMin)
-		pid->output=0;
+// 位置伺服函数
+void positionServo(float ref, DJI_t *motor)
+{
 
+    motor->posPID.ref = ref;
+    motor->posPID.fdb = motor->AxisData.AxisAngle_inDegree;
+    PID_Calc(&motor->posPID);
+
+    motor->speedPID.ref = motor->posPID.output;
+    motor->speedPID.fdb = motor->FdbData.rpm;
+    PID_Calc(&motor->speedPID);
 }
 
-//位置伺服函数
-void positionServo(float ref, DJI_t * motor){
-	
-	motor->posPID.ref = ref;
-	motor->posPID.fdb = motor->AxisData.AxisAngle_inDegree;
-	PID_Calc(&motor->posPID);
-	
-	motor->speedPID.ref = motor->posPID.output;
-	motor->speedPID.fdb = motor->FdbData.rpm;
-	PID_Calc(&motor->speedPID);
-
-}
-
-//速度伺服函数
-void speedServo(float ref, DJI_t * motor){
-	motor->speedPID.ref = ref;
-	motor->speedPID.fdb = motor->FdbData.rpm;
-	PID_Calc(&motor->speedPID);
+// 速度伺服函数
+void speedServo(float ref, DJI_t *motor)
+{
+    motor->speedPID.ref = ref;
+    motor->speedPID.fdb = motor->FdbData.rpm;
+    PID_Calc(&motor->speedPID);
 }
 
 /**
@@ -240,4 +227,34 @@ void DeadBand(double x, double y, double *new_x, double *new_y, double threshoul
 
     *new_x = x * k;
     *new_y = y * k;
+}
+
+void DeadBandOneDimensional(double x, double *new_x, double threshould)
+{
+    if (fabs(x- threshould) < 0) {
+        *new_x = 0;
+        return;
+    }
+
+    *new_x = x - threshould;
+}
+
+/**
+ * @description: 速度方向转换
+ * @param
+ * @return
+ * @bug 转换方程还不确定
+ */
+mavlink_control_t FrameTransform(mavlink_control_t *control, mavlink_posture_t *posture)
+{
+    mavlink_control_t result;
+    vPortEnterCritical();
+    result.vx_set = control->vx_set * cos(posture->zangle * DEC) + control->vy_set * sin(posture->zangle * DEC);
+    result.vy_set = -control->vx_set * sin(posture->zangle * DEC) + control->vy_set * cos(posture->zangle * DEC);
+    result.vw_set = control->vw_set;
+    result.w_set  = control->w_set;
+    result.x_set  = control->x_set;
+    result.y_set  = control->y_set;
+    vPortExitCritical();
+    return result;
 }

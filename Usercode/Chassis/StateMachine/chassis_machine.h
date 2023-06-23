@@ -20,7 +20,8 @@ void ChassisTaskStart();
 void ChassisSwitchState(CHASSIS_STATE target_chassis_state, CHASSIS_COMPONENT *chassis_component);
 void ChassisSwitchPoint(CHASSIS_POINT target_point, CHASSIS_COMPONENT *chassis_component);
 void VelocityPlanning(float initialAngle, float maxAngularVelocity, float AngularAcceleration, float targetAngle, float currentTime, volatile float *currentAngle);
-void ChassisHallCorrect(float target_angle, WHEEL_COMPONENT *wheel_component);
+void ChassisHallCorrect();
+void ChassisLocked();
 CHASSIS_COMPONENT ReadChassisComnent(CHASSIS_COMPONENT *chassis_component);
 void Joystick_Control();
 
