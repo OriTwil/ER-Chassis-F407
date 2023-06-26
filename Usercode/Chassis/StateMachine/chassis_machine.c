@@ -29,6 +29,7 @@ WHEEL_COMPONENT Wheel_component;
 CHASSIS_COMPONENT Chassis_component;
 CHASSIS_CONTROL Chassis_control;
 CHASSIS_POSITION Chassis_position;
+SPEED_RATIO Speed_ratio;
 
 double HallCorrectingStartPos[3];
 uint32_t HallCorrectingStartTick;
@@ -76,11 +77,15 @@ void ChassisTask(void const *argument)
                 Joystick_Control();
 #endif
                 vPortEnterCritical();
-                DeadBand((double)crl_speed.vx,
-                         (double)crl_speed.vy,
-                         &vx_deadbanded,
-                         &vy_deadbanded,
-                         0.15); // 死区控制 DJI遥控器摇杆
+                // vx,vy的死区控制
+                DeadBandOneDimensional((double)crl_speed.vx, &vx_deadbanded, 0.25);
+                DeadBandOneDimensional((double)crl_speed.vy, &vy_deadbanded, 0.25);
+                // DeadBand((double)crl_speed.vx,
+                //          (double)crl_speed.vy,
+                //          &vx_deadbanded,
+                //          &vy_deadbanded,
+                //          0.15); // 死区控制 DJI遥控器摇杆
+                // vw的死区控制
                 DeadBandOneDimensional((double)crl_speed.vw, &vw_deadbanded, 0.1);
                 vPortExitCritical();
 
@@ -276,7 +281,20 @@ CHASSIS_COMPONENT ReadChassisComnent(CHASSIS_COMPONENT *chassis_component)
 
 void Joystick_Control()
 {
-    crl_speed.vx = ReadJoystickRight_x(msg_joystick_air);
-    crl_speed.vy = ReadJoystickRight_y(msg_joystick_air);
-    crl_speed.vw = ReadJoystickLeft_x(msg_joystick_air);
+    xSemaphoreTake(Speed_ratio.xMutex_speed_ratio, portMAX_DELAY);
+    double speed_ratio_linear_temp  = Speed_ratio.speed_ratio_linear;
+    double speed_ratio_angular_temp = Speed_ratio.speed_ratio_angular;
+    xSemaphoreGive(Speed_ratio.xMutex_speed_ratio);
+
+    crl_speed.vx = ReadJoystickRight_x(msg_joystick_air) * speed_ratio_linear_temp;
+    crl_speed.vy = ReadJoystickRight_y(msg_joystick_air) * speed_ratio_linear_temp;
+    crl_speed.vw = ReadJoystickLeft_x(msg_joystick_air) * speed_ratio_angular_temp;
+}
+
+void SpeedSwitchRatio(double target_speed_ratio_linear, double target_speed_ratio_angular, SPEED_RATIO *Speed_Ratio)
+{
+    xSemaphoreTake(Speed_ratio.xMutex_speed_ratio, portMAX_DELAY);
+    Speed_Ratio->speed_ratio_angular = target_speed_ratio_angular;
+    Speed_Ratio->speed_ratio_linear  = target_speed_ratio_linear;
+    xSemaphoreGive(Speed_ratio.xMutex_speed_ratio);
 }

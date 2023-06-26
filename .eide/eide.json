@@ -66,7 +66,7 @@
         "OpenOCD": {
           "bin": "",
           "target": "stm32f4x",
-          "interface": "cmsis-dap",
+          "interface": "jlink",
           "baseAddr": "0x08000000"
         },
         "pyOCD": {

@@ -38,13 +38,13 @@ typedef enum {
 } PERCEPTION_STATE;
 
 typedef enum {
-    First_Point = 1,
-    Second_Point,
-    Third_Point,
-    Fourth_Point,
-    Fifth_Point,
-    Sixth_Point,
-    Seventh_Point,
+    Pickup_Point_Left = 1,
+    Pickup_Point_Right,
+    Fire_piont_1,
+    Fire_piont_2,
+    Fire_piont_3,
+    Fire_piont_4,
+    Fire_piont_5,
     Eighth_Point,
     Ninth_Point,
     Tenth_Point
@@ -159,5 +159,13 @@ typedef enum {
     Btn_JoystickL       = 19,
     Btn_JoystickR       = 20,
 } KEYS;
+
+typedef __IO struct
+{
+    /* data */
+    double speed_ratio_linear;
+    double speed_ratio_angular;
+    SemaphoreHandle_t xMutex_speed_ratio;
+} SPEED_RATIO;
 
 #endif

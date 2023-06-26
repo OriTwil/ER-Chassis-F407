@@ -24,10 +24,12 @@ void ChassisHallCorrect();
 void ChassisLocked();
 CHASSIS_COMPONENT ReadChassisComnent(CHASSIS_COMPONENT *chassis_component);
 void Joystick_Control();
+void SpeedSwitchRatio(double target_speed_ratio_linear, double target_speed_ratio_angular, SPEED_RATIO *Speed_Ratio);
 
 extern CHASSIS_COMPONENT Chassis_component;
 extern CHASSIS_CONTROL Chassis_control;
 extern CHASSIS_POSITION Chassis_position;
 extern WHEEL_COMPONENT Wheel_component;
+extern SPEED_RATIO Speed_ratio;
 
 #endif
