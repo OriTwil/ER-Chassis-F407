@@ -39,7 +39,7 @@ void StartDefaultTask(void const *argument)
     /*开启线程*/
     PerceptionTaskStart();      // 底盘感知定位线程
     ChassisTaskStart();         // 舵轮底盘线程
-    ServoTaskStart();           // 伺服线程
+    // ServoTaskStart();           // 伺服线程
     CommunicateStart();         // 通信线程
     StateManagemantTaskStart(); // 切换状态线程
     RemoteControlStart();       // 遥控器
