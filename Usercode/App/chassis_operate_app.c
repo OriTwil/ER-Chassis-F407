@@ -21,7 +21,7 @@ void StateManagemantTask(void const *argument)
     // ChassisSwitchState(HallCorrecting, &Chassis_component);
     for (;;) {
         JoystickControl();
-        vTaskDelay(10);
+        vTaskDelay(15);
     }
 }
 
@@ -55,13 +55,14 @@ void StateInit()
     Chassis_position.Chassis_Angle_y    = 0;
     Chassis_position.xMutex_position    = xSemaphoreCreateRecursiveMutex();
 
-    Chassis_control.Chassis_Control_vw = 0;
-    Chassis_control.Chassis_Control_vx = 0;
-    Chassis_control.Chassis_Control_vy = 0;
-    Chassis_control.Chassis_Control_w  = 0;
-    Chassis_control.Chassis_Control_x  = 0;
-    Chassis_control.Chassis_Control_y  = 0;
-    Chassis_control.xMutex_control     = xSemaphoreCreateRecursiveMutex();
+    Chassis_control.Chassis_Control_vw      = 0;
+    Chassis_control.Chassis_Control_vx      = 0;
+    Chassis_control.Chassis_Control_vy      = 0;
+    Chassis_control.Chassis_Control_w       = 0;
+    Chassis_control.Chassis_Control_x       = 0;
+    Chassis_control.Chassis_Control_y       = 0;
+    Chassis_control.Chassis_Control_w_limit = 0;
+    Chassis_control.xMutex_control          = xSemaphoreCreateRecursiveMutex();
 
     Pickup_component.Pickup_Ring   = First_Ring;
     Pickup_component.Pickup_State  = Ready;
@@ -100,9 +101,20 @@ void PIDInit()
     Chassis_pid.Pid_pos_y.limit = 0.3;
 }
 
+void SetChassis_w_Limit(float w_limit, CHASSIS_CONTROL *current_chassis_control)
+{
+    xSemaphoreTakeRecursive(current_chassis_control->xMutex_control, portMAX_DELAY);
+    current_chassis_control->Chassis_Control_w_limit = w_limit / 10.0;
+    xSemaphoreGiveRecursive(current_chassis_control->xMutex_control);
+}
+
 void JoystickControl()
 {
     /*设计操作手的操作*/
+    // 微调w
+    vPortEnterCritical();
+    SetChassis_w_Limit((float)ReadJoystickKnobsLeft_y(msg_joystick_air), &Chassis_control);
+    vPortExitCritical();
     // 移动至取环区
     if (ReadJoystickButtons(msg_joystick_air, Btn_Btn4)) {
         vPortEnterCritical();
@@ -141,14 +153,20 @@ void JoystickControl()
         vPortExitCritical();
     }
     // 切换手动自动模式
-    if (ReadJoystickButtons(msg_joystick_air, Btn_Btn0)) {
+    if (ReadJoystickSwitchs(msg_joystick_air, Right_switch) == 0) {
         ChassisSwitchState(RemoteControl, &Chassis_component);
-    }
-    if (ReadJoystickButtons(msg_joystick_air, Btn_Btn1)) {
+    } else if (ReadJoystickSwitchs(msg_joystick_air, Right_switch) == 1) {
         ChassisSwitchState(ComputerControl, &Chassis_component);
     }
+    // 霍尔自检
     if (ReadJoystickButtons(msg_joystick_air, Btn_Btn2)) {
         ChassisSwitchState(HallCorrecting, &Chassis_component);
+    }
+    // 切换高速低速
+    if (ReadJoystickSwitchs(msg_joystick_air, Left_switch) == 0) {
+        SpeedSwitchRatio(0.3, 0.5, &Speed_ratio);
+    } else if (ReadJoystickSwitchs(msg_joystick_air, Left_switch) == 1) {
+        SpeedSwitchRatio(1.0, 1.4, &Speed_ratio);
     }
 }
 
