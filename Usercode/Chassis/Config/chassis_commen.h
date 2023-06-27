@@ -103,6 +103,7 @@ typedef __IO struct
     float Chassis_Control_x;
     float Chassis_Control_y;
     float Chassis_Control_w;
+    float Chassis_Control_w_limit;
     SemaphoreHandle_t xMutex_control;
 } CHASSIS_CONTROL;
 

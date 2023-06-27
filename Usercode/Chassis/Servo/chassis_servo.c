@@ -23,7 +23,7 @@ void ServoTask(void const *argument)
         xSemaphoreTakeRecursive(Chassis_control.xMutex_control, portMAX_DELAY);
         SetPIDTarget(Chassis_control.Chassis_Control_x,
                      Chassis_control.Chassis_Control_y,
-                     Chassis_control.Chassis_Control_w,
+                     Chassis_control.Chassis_Control_w + Chassis_control.Chassis_Control_w_limit,
                      &Chassis_pid);
         xSemaphoreGiveRecursive(Chassis_control.xMutex_control);
 
@@ -73,12 +73,12 @@ void ServoTaskStart()
 void MotorInit()
 {
     CANFilterInit(&hcan1);
-    hDJI[0].motorType = M2006; // 
-    hDJI[1].motorType = M2006; // 
-    hDJI[2].motorType = M2006; // 
-    hDJI[3].motorType = M2006; // 
-    hDJI[4].motorType = M2006; // 
-    hDJI[5].motorType = M2006; // 
+    hDJI[0].motorType = M2006; //
+    hDJI[1].motorType = M2006; //
+    hDJI[2].motorType = M2006; //
+    hDJI[3].motorType = M2006; //
+    hDJI[4].motorType = M2006; //
+    hDJI[5].motorType = M2006; //
     hDJI[6].motorType = M2006;
     DJI_Init(); // 大疆电机初始化
 }
