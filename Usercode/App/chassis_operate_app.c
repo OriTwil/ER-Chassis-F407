@@ -21,7 +21,7 @@ void StateManagemantTask(void const *argument)
     // ChassisSwitchState(HallCorrecting, &Chassis_component);
     for (;;) {
         JoystickControl();
-        vTaskDelay(15);
+        vTaskDelay(100);
     }
 }
 

@@ -127,7 +127,7 @@ void ChassisTask(void const *argument)
             default:
                 break;
         }
-        vTaskDelay(5);
+        vTaskDelay(50);
     }
 }
 

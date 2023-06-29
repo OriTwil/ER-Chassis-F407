@@ -54,7 +54,7 @@ void CommunicateTask(void const *argument)
         mavlink_msg_posture_send_struct(MAVLINK_COMM_0, &mav_posture_temp);
         // mavlink_msg_chassis_to_upper_send_struct(MAVLINK_COMM_2, &chassis_data_temp);
         mavlink_msg_joystick_air_send_struct(MAVLINK_COMM_2, &msg_joystick_air_temp);
-        vTaskDelay(10);
+        vTaskDelay(20);
     }
 }
 
