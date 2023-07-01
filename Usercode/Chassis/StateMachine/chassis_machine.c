@@ -89,13 +89,18 @@ void ChassisTask(void const *argument)
                 DeadBandOneDimensional((double)crl_speed.vw, &vw_deadbanded, 0.1);
                 vPortExitCritical();
 
+                xSemaphoreTake(Speed_ratio.xMutex_speed_ratio, portMAX_DELAY);
+                double speed_ratio_linear_temp  = Speed_ratio.speed_ratio_linear;
+                double speed_ratio_angular_temp = Speed_ratio.speed_ratio_angular;
+                xSemaphoreGive(Speed_ratio.xMutex_speed_ratio);
+
                 SetChassisControlPosition(Chassis_position.Chassis_Position_x,
                                           Chassis_position.Chassis_Position_y,
                                           Chassis_position.Chassis_Position_w,
                                           &Chassis_control); // 没什么用，反正这个状态用不到PID
-                SetChassisControlVelocity(vx_deadbanded,
-                                          vy_deadbanded,
-                                          vw_deadbanded,
+                SetChassisControlVelocity(vx_deadbanded * speed_ratio_linear_temp,
+                                          vy_deadbanded * speed_ratio_linear_temp,
+                                          vw_deadbanded * speed_ratio_angular_temp,
                                           &Chassis_control);
                 CalculateWheels(&Chassis_control, &Wheel_component); // 用摇杆控制底盘
                 break;
@@ -281,14 +286,10 @@ CHASSIS_COMPONENT ReadChassisComnent(CHASSIS_COMPONENT *chassis_component)
 
 void Joystick_Control()
 {
-    xSemaphoreTake(Speed_ratio.xMutex_speed_ratio, portMAX_DELAY);
-    double speed_ratio_linear_temp  = Speed_ratio.speed_ratio_linear;
-    double speed_ratio_angular_temp = Speed_ratio.speed_ratio_angular;
-    xSemaphoreGive(Speed_ratio.xMutex_speed_ratio);
 
-    crl_speed.vx = ReadJoystickRight_x(msg_joystick_air) * speed_ratio_linear_temp;
-    crl_speed.vy = ReadJoystickRight_y(msg_joystick_air) * speed_ratio_linear_temp;
-    crl_speed.vw = ReadJoystickLeft_x(msg_joystick_air) * speed_ratio_angular_temp;
+    crl_speed.vx = ReadJoystickRight_x(msg_joystick_air);
+    crl_speed.vy = ReadJoystickRight_y(msg_joystick_air);
+    crl_speed.vw = ReadJoystickLeft_x(msg_joystick_air);
 }
 
 void SpeedSwitchRatio(double target_speed_ratio_linear, double target_speed_ratio_angular, SPEED_RATIO *Speed_Ratio)

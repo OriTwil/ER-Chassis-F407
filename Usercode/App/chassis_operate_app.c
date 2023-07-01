@@ -115,6 +115,7 @@ void JoystickControl()
     vPortEnterCritical();
     SetChassis_w_Limit((float)ReadJoystickKnobsLeft_y(msg_joystick_air), &Chassis_control);
     vPortExitCritical();
+    
     // 移动至取环区
     if (ReadJoystickButtons(msg_joystick_air, Btn_Btn4)) {
         vPortEnterCritical();
@@ -164,7 +165,7 @@ void JoystickControl()
     }
     // 切换高速低速
     if (ReadJoystickSwitchs(msg_joystick_air, Left_switch) == 0) {
-        SpeedSwitchRatio(0.3, 0.5, &Speed_ratio);
+        SpeedSwitchRatio(0.5, 0.7, &Speed_ratio);
     } else if (ReadJoystickSwitchs(msg_joystick_air, Left_switch) == 1) {
         SpeedSwitchRatio(1.0, 1.4, &Speed_ratio);
     }
