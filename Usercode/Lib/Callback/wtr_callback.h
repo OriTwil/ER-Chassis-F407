@@ -15,6 +15,7 @@ extern int counter;
 extern int test;
 extern float w_speed;
 extern int16_t crldata[4];
+extern int led_count;
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart);
 

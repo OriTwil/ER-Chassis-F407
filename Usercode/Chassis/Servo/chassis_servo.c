@@ -37,7 +37,7 @@ void ServoTask(void const *argument)
         // 伺服控制
         ServoWheels(&Wheel_component);
 
-        vTaskDelayUntil(&PreviousWakeTime, 3);
+        vTaskDelayUntil(&PreviousWakeTime, 2);
     }
 }
 

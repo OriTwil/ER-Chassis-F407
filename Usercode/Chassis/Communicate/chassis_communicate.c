@@ -48,13 +48,14 @@ void CommunicateTask(void const *argument)
         vPortEnterCritical();
         mavlink_posture_t mav_posture_temp = mav_posture;
         // mavlink_chassis_to_upper_t chassis_data_temp = chassis_data;
-        mavlink_joystick_air_t msg_joystick_air_temp = msg_joystick_air;
+        mavlink_joystick_air_t msg_joystick_air_temp = msg_joystick_air.msg_joystick_air;
         vPortExitCritical();
 
         mavlink_msg_posture_send_struct(MAVLINK_COMM_0, &mav_posture_temp);
+        vTaskDelay(10);
         // mavlink_msg_chassis_to_upper_send_struct(MAVLINK_COMM_2, &chassis_data_temp);
         mavlink_msg_joystick_air_send_struct(MAVLINK_COMM_2, &msg_joystick_air_temp);
-        vTaskDelay(20);
+        vTaskDelay(10);
     }
 }
 

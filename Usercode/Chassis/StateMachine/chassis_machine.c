@@ -224,9 +224,9 @@ void ChassisHallCorrect() //! 要考虑形参volatile
         HallCorrectingStartPos[i] = Wheel_component.wheels[i].now_rot_pos;
     }
 
-    targetAngle[0] = HallCorrectingStartPos[0] - 2 * 1.1 * M_PI;
-    targetAngle[1] = HallCorrectingStartPos[1] + 2 * 1.1 * M_PI;
-    targetAngle[2] = HallCorrectingStartPos[2] + 2 * 1.1 * M_PI;
+    targetAngle[0] = HallCorrectingStartPos[0] - 4 * 1.1 * M_PI;
+    targetAngle[1] = HallCorrectingStartPos[1] + 4 * 1.1 * M_PI;
+    targetAngle[2] = HallCorrectingStartPos[2] + 4 * 1.1 * M_PI;
 
     bool isArrive                      = false;               // 标志是否达到目标位置
     TickType_t HallCorrectingStartTick = xTaskGetTickCount(); // 初始时间
@@ -287,9 +287,9 @@ CHASSIS_COMPONENT ReadChassisComnent(CHASSIS_COMPONENT *chassis_component)
 void Joystick_Control()
 {
 
-    crl_speed.vx = ReadJoystickRight_x(msg_joystick_air);
-    crl_speed.vy = ReadJoystickRight_y(msg_joystick_air);
-    crl_speed.vw = ReadJoystickLeft_x(msg_joystick_air);
+    crl_speed.vx = ReadJoystickRight_x(&msg_joystick_air);
+    crl_speed.vy = ReadJoystickRight_y(&msg_joystick_air);
+    crl_speed.vw = ReadJoystickLeft_x(&msg_joystick_air);
 }
 
 void SpeedSwitchRatio(double target_speed_ratio_linear, double target_speed_ratio_angular, SPEED_RATIO *Speed_Ratio)

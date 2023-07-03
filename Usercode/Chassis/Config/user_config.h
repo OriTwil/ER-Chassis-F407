@@ -78,8 +78,8 @@
 #define Wheel_Left_Locked_Pos       0
 #define Wheel_Right_Locked_Pos      0
 
-#define HallCorrecting_Max_Velocity 3
-#define HallCorrecting_Acceleration 30
+#define HallCorrecting_Max_Velocity 6
+#define HallCorrecting_Acceleration 60
 
 #define Hall_Front_GPIN_PIN         GPIO_PIN_14
 #define Hall_Left_GPIN_PIN          GPIO_PIN_12
@@ -120,7 +120,7 @@
 // wtr_time.h
 #define HAL_Tick_TIM        TIM7
 
-#define UART_Computer       USART3
+#define UART_Computer       USART2
 #define UART_OPS            UART4
 #define UART_AS69           USART1
 #define UART_Remote_Control USART6
