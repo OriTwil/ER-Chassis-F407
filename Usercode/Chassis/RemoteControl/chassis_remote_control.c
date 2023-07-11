@@ -6,6 +6,7 @@
 #include "chassis_communicate.h"
 #include "chassis_machine.h"
 #include "wtr_callback.h"
+#include "chassis_operate_app.h"
 
 JOYSTICK_AIR msg_joystick_air;
 JOYSTICK_AIR_LED msg_joystick_air_led;
@@ -15,25 +16,44 @@ JOYSTICK_AIR_DASHBOARD_SET_TITLE msg_joystick_air_title_state;
 JOYSTICK_AIR_DASHBOARD_SET_TITLE msg_joystick_air_title_posture;
 JOYSTICK_AIR_DASHBOARD_SET_TITLE msg_joystick_air_title_knob_r;
 
+JOYSTICK_AIR_DASHBOARD_SET_TITLE msg_joystick_air_title_pitch;
+JOYSTICK_AIR_DASHBOARD_SET_TITLE msg_joystick_air_title_yaw;
+JOYSTICK_AIR_DASHBOARD_SET_TITLE msg_joystick_air_title_speed;
+
 JOYSTICK_AIR_DASHBOARD_SET_MSG msg_joystick_air_msg_point;
 JOYSTICK_AIR_DASHBOARD_SET_MSG msg_joystick_air_msg_state;
 JOYSTICK_AIR_DASHBOARD_SET_MSG msg_joystick_air_msg_posture;
 JOYSTICK_AIR_DASHBOARD_SET_MSG msg_joystick_air_msg_knob_r;
+
+JOYSTICK_AIR_DASHBOARD_SET_MSG msg_joystick_air_msg_pitch;
+JOYSTICK_AIR_DASHBOARD_SET_MSG msg_joystick_air_msg_yaw;
+JOYSTICK_AIR_DASHBOARD_SET_MSG msg_joystick_air_msg_speed;
 
 JOYSTICK_AIR_DASHBOARD_DELETE msg_joystick_air_delete;
 char title_point[20]   = "point";
 char title_state[20]   = "state";
 char title_posture[20] = "posture";
 char title_knob_r[20]  = "mic_adjust_v";
+char title_pitch[20] = "pitch";
+char title_yaw[20] = "yaw";
+char title_speed[20] = "speed";
+
 char msg_point[20]     = "no_msg";
 char msg_state[20]     = "no_msg";
 char msg_posture[20]   = "no_msg";
 char msg_knob_r[20]    = "no_msg";
+char msg_pitch[20] = "no";
+char msg_yaw[20] = "no";
+char msg_speed[20] = "no";
+
 float last_control_vw  = 0;
 
 #define ID_Point   6
 #define ID_State   8
 #define ID_Posture 16
+#define ID_Speed    20
+#define ID_Pitch    25
+#define ID_Yaw      30
 #define ID_Knob_R  3
 
 void RemoteControlTask(void const *argument)
@@ -50,18 +70,24 @@ void RemoteControlTask(void const *argument)
         }
 
         // 底盘位置
-        MsgUpdatePoint();
+        // MsgUpdatePoint();
         // 底盘状态
-        MsgUpdateState();
+        // MsgUpdateState();
         // 位置
         MsgUpdatePosture();
+        MsgUpdateSpeed();
+        MsgUpdatePitch();
+        MsgUpdateYaw();
         // 射速微调
-        MsgUpdateKnobR();
+        // MsgUpdateKnobR();
 
-        RemoteControlSendMsg(&msg_joystick_air_msg_point);
-        RemoteControlSendMsg(&msg_joystick_air_msg_state);
+        // RemoteControlSendMsg(&msg_joystick_air_msg_point);
+        // RemoteControlSendMsg(&msg_joystick_air_msg_state);
+        RemoteControlSendMsg(&msg_joystick_air_msg_pitch);
+        RemoteControlSendMsg(&msg_joystick_air_msg_yaw);
+        RemoteControlSendMsg(&msg_joystick_air_msg_speed);
         RemoteControlSendMsg(&msg_joystick_air_msg_posture);
-        RemoteControlSendMsg(&msg_joystick_air_msg_knob_r);
+        // RemoteControlSendMsg(&msg_joystick_air_msg_knob_r);
         vTaskDelayUntil(&PreviousWakeTime, 100);
     }
 }
@@ -222,10 +248,10 @@ bool ReadJoystickSwitchs(JOYSTICK_AIR *msg_joystick_air_, SWITCHS index)
 // 应用函数
 void TitleInit()
 {
-    JoystickSwitchTitle(ID_Point, title_point, &msg_joystick_air_title_point);
-    JoystickSwitchTitle(ID_State, title_state, &msg_joystick_air_title_state);
+//     JoystickSwitchTitle(ID_Point, title_point, &msg_joystick_air_title_point);
+//     JoystickSwitchTitle(ID_State, title_state, &msg_joystick_air_title_state);
     JoystickSwitchTitle(ID_Posture, title_posture, &msg_joystick_air_title_posture);
-    JoystickSwitchTitle(ID_Knob_R, title_knob_r, &msg_joystick_air_title_knob_r);
+    // JoystickSwitchTitle(ID_Knob_R, title_knob_r, &msg_joystick_air_title_knob_r);
 }
 
 void MsgUpdatePoint()
@@ -249,6 +275,25 @@ void MsgUpdatePosture()
 
     snprintf(msg_posture, sizeof(msg_posture), "x=%ld y=%ld w=%ld", (int32_t)(posture_x * 10000), (int32_t)(posture_y * 10000), (int32_t)(posture_w * 10000));
     JoystickSwitchMsg(ID_Posture, msg_posture, &msg_joystick_air_msg_posture);
+    vTaskDelay(2);
+}
+
+void MsgUpdateSpeed()
+{
+    snprintf(msg_speed,sizeof(msg_speed),"speed=%ld",(int32_t)speed);
+    JoystickSwitchMsg(ID_Speed, msg_speed, &msg_joystick_air_msg_speed);
+    vTaskDelay(2);
+}
+void MsgUpdatePitch()
+{
+    snprintf(msg_pitch,sizeof(msg_pitch),"pitch=%ld",(int32_t)pitch);
+    JoystickSwitchMsg(ID_Pitch, msg_pitch, &msg_joystick_air_msg_pitch);
+    vTaskDelay(2);
+}
+void MsgUpdateYaw()
+{
+    snprintf(msg_yaw,sizeof(msg_yaw),"yaw=%ld",(int32_t)yaw);
+    JoystickSwitchMsg(ID_Yaw, msg_yaw, &msg_joystick_air_msg_yaw);
     vTaskDelay(2);
 }
 

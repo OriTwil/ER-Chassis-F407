@@ -19,6 +19,13 @@ float ReadJoystickRight_y(JOYSTICK_AIR *msg_joystick_air_);
 int16_t ReadJoystickKnobsLeft(JOYSTICK_AIR *msg_joystick_air_);
 int16_t ReadJoystickKnobsRight(JOYSTICK_AIR *msg_joystick_air_);
 bool ReadJoystickSwitchs(JOYSTICK_AIR *msg_joystick_air_, SWITCHS index);
+void TitleInit();
+void LedUpdate();
+void MsgUpdatePosture();
+void MsgUpdateYaw();
+void MsgUpdatePitch();
+void MsgUpdateSpeed();
+
 
 extern JOYSTICK_AIR msg_joystick_air;
 extern JOYSTICK_AIR_LED msg_joystick_air_led;
@@ -27,11 +34,17 @@ extern JOYSTICK_AIR_DASHBOARD_SET_TITLE msg_joystick_air_title_point;
 extern JOYSTICK_AIR_DASHBOARD_SET_TITLE msg_joystick_air_title_state;
 extern JOYSTICK_AIR_DASHBOARD_SET_TITLE msg_joystick_air_title_posture;
 extern JOYSTICK_AIR_DASHBOARD_SET_TITLE msg_joystick_air_title_knob_r;
+extern JOYSTICK_AIR_DASHBOARD_SET_TITLE msg_joystick_air_title_pitch;
+extern JOYSTICK_AIR_DASHBOARD_SET_TITLE msg_joystick_air_title_yaw;
+extern JOYSTICK_AIR_DASHBOARD_SET_TITLE msg_joystick_air_title_speed;
 
 extern JOYSTICK_AIR_DASHBOARD_SET_MSG msg_joystick_air_msg_point;
 extern JOYSTICK_AIR_DASHBOARD_SET_MSG msg_joystick_air_msg_state;
 extern JOYSTICK_AIR_DASHBOARD_SET_MSG msg_joystick_air_msg_posture;
 extern JOYSTICK_AIR_DASHBOARD_SET_MSG msg_joystick_air_msg_knob_r;
+extern JOYSTICK_AIR_DASHBOARD_SET_MSG msg_joystick_air_msg_pitch;
+extern JOYSTICK_AIR_DASHBOARD_SET_MSG msg_joystick_air_msg_yaw;
+extern JOYSTICK_AIR_DASHBOARD_SET_MSG msg_joystick_air_msg_speed;
 
 extern JOYSTICK_AIR_DASHBOARD_DELETE msg_joystick_air_delete;
 #endif

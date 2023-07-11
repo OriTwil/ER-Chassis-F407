@@ -14,4 +14,8 @@ void PIDInit();
 void JoystickControl();
 void TestControl();
 
+extern int32_t speed;
+extern int32_t pitch;
+extern int32_t yaw;
+
 #endif

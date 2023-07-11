@@ -77,11 +77,17 @@ void StateInit()
     msg_joystick_air_title_state.xMutex_joystick_air_dashboard_set_title = xSemaphoreCreateRecursiveMutex();
     msg_joystick_air_title_posture.xMutex_joystick_air_dashboard_set_title = xSemaphoreCreateRecursiveMutex();
     msg_joystick_air_title_knob_r.xMutex_joystick_air_dashboard_set_title = xSemaphoreCreateRecursiveMutex();
+    msg_joystick_air_title_pitch.xMutex_joystick_air_dashboard_set_title = xSemaphoreCreateRecursiveMutex();
+    msg_joystick_air_title_yaw.xMutex_joystick_air_dashboard_set_title = xSemaphoreCreateRecursiveMutex();
+    msg_joystick_air_title_speed.xMutex_joystick_air_dashboard_set_title = xSemaphoreCreateRecursiveMutex();
 
     msg_joystick_air_msg_point.xMutex_joystick_air_dashboard_set_msg = xSemaphoreCreateRecursiveMutex();
     msg_joystick_air_msg_state.xMutex_joystick_air_dashboard_set_msg = xSemaphoreCreateRecursiveMutex();
     msg_joystick_air_msg_posture.xMutex_joystick_air_dashboard_set_msg = xSemaphoreCreateRecursiveMutex();
     msg_joystick_air_msg_knob_r.xMutex_joystick_air_dashboard_set_msg = xSemaphoreCreateRecursiveMutex();
+    msg_joystick_air_msg_pitch.xMutex_joystick_air_dashboard_set_msg = xSemaphoreCreateRecursiveMutex();
+    msg_joystick_air_msg_yaw.xMutex_joystick_air_dashboard_set_msg = xSemaphoreCreateRecursiveMutex();
+    msg_joystick_air_msg_speed.xMutex_joystick_air_dashboard_set_msg = xSemaphoreCreateRecursiveMutex();
 
     msg_joystick_air_delete.xMutex_joystick_air_dashboard_del = xSemaphoreCreateRecursiveMutex();
 
@@ -120,6 +126,10 @@ void SetChassis_w_Limit(float w_limit, CHASSIS_CONTROL *current_chassis_control)
     xSemaphoreGiveRecursive(current_chassis_control->xMutex_control);
 }
 
+int32_t speed=0;
+int32_t pitch=0;
+int32_t yaw=0;
+
 void JoystickControl()
 {
     /*设计操作手的操作*/
@@ -130,41 +140,55 @@ void JoystickControl()
     
     // 移动至取环区
     if (ReadJoystickButtons(&msg_joystick_air, Btn_Btn4)) {
-        vPortEnterCritical();
-        mav_posture.point = Pickup_Point_Left;
-        vPortExitCritical();
+        // vPortEnterCritical();
+        // mav_posture.point = Pickup_Point_Left;
+        // vPortExitCritical();
+        speed--;
     }
     if (ReadJoystickButtons(&msg_joystick_air, Btn_Btn5)) {
-        vPortEnterCritical();
-        mav_posture.point = Pickup_Point_Right;
-        vPortExitCritical();
+        // vPortEnterCritical();
+        // mav_posture.point = Pickup_Point_Right;
+        // vPortExitCritical();
+        speed++;
     }
     // 移动至射环区
     if (ReadJoystickButtons(&msg_joystick_air, Btn_RightCrossLeft)) {
-        vPortEnterCritical();
-        mav_posture.point = Fire_piont_1;
-        vPortExitCritical();
+        // vPortEnterCritical();
+        // mav_posture.point = Fire_piont_1;
+        // vPortExitCritical();
+        yaw--;
+    }
+        if (ReadJoystickButtons(&msg_joystick_air, Btn_RightCrossRight)) {
+        // vPortEnterCritical();
+        // mav_posture.point = Fire_piont_4;
+        // vPortExitCritical();
+        yaw++;
     }
     if (ReadJoystickButtons(&msg_joystick_air, Btn_RightCrossUp)) {
-        vPortEnterCritical();
-        mav_posture.point = Fire_piont_2;
-        vPortExitCritical();
-    }
-    if (ReadJoystickButtons(&msg_joystick_air, Btn_RightCrossMid)) {
-        vPortEnterCritical();
-        mav_posture.point = Fire_piont_3;
-        vPortExitCritical();
-    }
-    if (ReadJoystickButtons(&msg_joystick_air, Btn_RightCrossRight)) {
-        vPortEnterCritical();
-        mav_posture.point = Fire_piont_4;
-        vPortExitCritical();
+        // vPortEnterCritical();
+        // mav_posture.point = Fire_piont_2;
+        // vPortExitCritical();
+        pitch++;
     }
     if (ReadJoystickButtons(&msg_joystick_air, Btn_RightCrossDown)) {
-        vPortEnterCritical();
-        mav_posture.point = Fire_piont_5;
-        vPortExitCritical();
+        // vPortEnterCritical();
+        // mav_posture.point = Fire_piont_5;
+        // vPortExitCritical();
+        pitch--;
     }
+    if(ReadJoystickButtons(&msg_joystick_air,Btn_Btn3)){
+        pitch=0;
+        yaw=0;
+        speed=0;
+    }
+
+    // if (ReadJoystickButtons(&msg_joystick_air, Btn_RightCrossMid)) {
+    //     vPortEnterCritical();
+    //     mav_posture.point = Fire_piont_3;
+    //     vPortExitCritical();
+    // }
+
+
     // 切换手动自动模式
     if (ReadJoystickSwitchs(&msg_joystick_air, Right_switch) == 0) {
         ChassisSwitchState(RemoteControl, &Chassis_component);
@@ -179,7 +203,7 @@ void JoystickControl()
     if (ReadJoystickSwitchs(&msg_joystick_air, Left_switch) == 0) {
         SpeedSwitchRatio(0.5, 0.7, &Speed_ratio);
     } else if (ReadJoystickSwitchs(&msg_joystick_air, Left_switch) == 1) {
-        SpeedSwitchRatio(1.5, 2.0, &Speed_ratio);
+        SpeedSwitchRatio(1.5, 1.5, &Speed_ratio);
     }
 }
 
