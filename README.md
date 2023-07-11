@@ -2,6 +2,7 @@
 
 ER robot chassis for ROBOCON 2023, ported to STM32F407 MCU.
 
+<image src="https://github.com/OriTwil/ER-Chassis-F407/blob/main/picture/ER-image.jpg" width="600" height="400">
 ## Elephent Robot
 
 ## File Description
